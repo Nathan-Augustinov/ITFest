@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:it_fest/constants/app_colors.dart';
 import 'package:it_fest/home/home_screen.dart';
 import 'package:it_fest/profile/profile.dart';
 import 'package:it_fest/task/add_task.dart';
@@ -35,7 +36,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
         },
         hoverElevation: 2,
         //TODO: change color
-        backgroundColor: Colors.blueGrey,
+        backgroundColor: AppColors.floatingNavBar,
         child: const Icon(
           Icons.add,
           color: Colors.white,
@@ -44,10 +45,10 @@ class _BottomNavBarState extends State<BottomNavBar> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
         notchMargin: 1,
-        color: Colors.blueAccent,
+        color: AppColors.navBar,
         shape: const CircularNotchedRectangle(),
         child: Container(
-          color: Colors.blueAccent,
+          color: AppColors.navBar,
           height: 55,
           child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
