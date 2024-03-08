@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:it_fest/constants/app_colors.dart';
 import 'package:it_fest/home/home_screen.dart';
 import 'package:it_fest/profile/profile.dart';
+import 'package:it_fest/screens/authentication/login_screen.dart';
 import 'package:it_fest/task/add_task.dart';
 
 class BottomNavBar extends StatefulWidget {
@@ -32,7 +33,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const AddTaskScreen()));
+              MaterialPageRoute(builder: (context) => LoginScreen()));
         },
         hoverElevation: 2,
         //TODO: change color

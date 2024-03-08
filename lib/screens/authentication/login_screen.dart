@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:it_fest/home/home_screen.dart';
 import 'package:it_fest/models/account.dart';
 import 'package:it_fest/screens/authentication/register_screen.dart';
 import 'package:it_fest/screens/start_page.dart';
@@ -9,6 +10,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 
 class LoginScreen extends StatelessWidget {
+  final _formKey = GlobalKey<FormState>();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+
   final AuthenticationService _googleAuthService = AuthenticationService();
 
   LoginScreen({super.key});
@@ -20,25 +25,44 @@ class LoginScreen extends StatelessWidget {
         title: const Text('Login'),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const TextField(
-              decoration: InputDecoration(
-                labelText: 'Username',
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children:[
+              TextFormField(
+                controller: _emailController,
+                decoration: const InputDecoration(labelText: 'Email'),
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Please enter your email';
+                  }
+                  return null;
+                },
               ),
-            ),
-            const SizedBox(height: 16),
-            const TextField(
-              decoration: InputDecoration(
-                labelText: 'Password',
+              TextFormField(
+                controller: _passwordController,
+                decoration: const InputDecoration(labelText: 'Password'),
+                obscureText: true,
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Please enter a password';
+                  }
+                  return null;
+                },
               ),
-              obscureText: true,
-            ),
+              
+            
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
                 // TODO: Implement login functionality
+                if (_formKey.currentState!.validate()) {
+                  loginUserWithEmailAndPassword(_emailController.text, _passwordController.text);
+                  Navigator.pushReplacement(
+                    context, 
+                    MaterialPageRoute(builder: (context) => StartPage())
+                  );
+                }
               },
               child: const Text('Login'),
             ),
@@ -77,21 +101,15 @@ class LoginScreen extends StatelessWidget {
 
                 if (user != null && context.mounted) {
                   // Navigate to Home Screen
-                  Account account = Account(
-                    uid: user.uid,
-                    firstName: user.displayName!.split(' ')[0],
-                    lastName: user.displayName!.split(' ')[1],
-                    email: user.email!,
-                    photoURL: user.photoURL!
-                  );
 
                   // Add account to Firestore
-                  FirebaseFirestore.instance.collection('accounts').doc(user.uid).set({
-                    'uid': account.uid,
-                    'firstName': account.firstName,
-                    'lastName': account.lastName,
-                    'email': account.email,
-                    'photoURL': account.photoURL
+                  FirebaseFirestore.instance.collection('accounts').doc(user.email).set({
+                    'uid': user.uid,
+                    'firstName': user.displayName!.split(' ')[0],
+                    'lastName': user.displayName!.split(' ')[1],
+                    'email': user.email,
+                    'photoURL': user.photoURL,
+                    'friends': [],
                   });
 
                   Navigator.pushReplacement(
@@ -105,6 +123,23 @@ class LoginScreen extends StatelessWidget {
           ],
         ),
       ),
-    );
+    ));
   }
+
+  void loginUserWithEmailAndPassword(String email, String password) async {
+  try {
+    UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+    // User logged in successfully
+    User? user = userCredential.user;
+    FirebaseFirestore.instance.collection('accounts').doc(email).update({'uid': user!.uid});
+    print('User logged in: ${user.email}');
+    
+  } catch (e) {
+    // Error occurred while logging in
+    print('Error logging in: $e');
+  }
+}
 }
