@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 class AppColors {
-  static Color navBar = const Color.fromRGBO(174, 150, 139, 255);
+  static Color navBar = const Color(0xFFb9a295);
   static Color floatingNavBar = const Color(0xFF886246);
   static const Color background = Color(0xFFf4f1ef);
   static const Color green = Color(0xFF9fb071);
