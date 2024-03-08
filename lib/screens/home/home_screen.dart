@@ -35,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   radius: 35,
                   backgroundImage:
                       //TODO: if user has image ( NetworkImage('https://picsum.photos/id/237/200/300'),) put image else
-                      AssetImage('assets/images/empty_profile_pic.png'),
+                      AssetImage('assets/images/empty_profile_pic.jpg'),
                 ),
                 //TODO: remove hardcoded code
                 Padding(
