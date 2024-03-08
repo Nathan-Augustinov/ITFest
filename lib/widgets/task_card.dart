@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:it_fest/constants/app_colors.dart';
 import 'package:it_fest/constants/insets.dart';
+import 'package:it_fest/models/task.dart';
+import 'package:it_fest/screens/home/_utilities.dart';
 
 class TaskCard extends StatelessWidget {
-  const TaskCard({super.key});
+  const TaskCard({required this.task, super.key});
+
+  final Task task;
 
   //TODO: change hardcoded texts
   @override
@@ -14,7 +18,7 @@ class TaskCard extends StatelessWidget {
         width: 230,
         decoration: BoxDecoration(
           //TODO: color accordingly to task
-          color: AppColors.pink,
+          color: HomeUtils().getColorByType(task.taskType),
           borderRadius: BorderRadius.circular(16.0),
         ),
         child: Column(
@@ -25,18 +29,18 @@ class TaskCard extends StatelessWidget {
               children: [
                 Padding(
                     padding: AppInsets.leftRightTopBottom10,
-                    child: const Text("Task name")),
+                    child: Text(task.name)),
                 //TODO: set priority name accordingly
               ],
             ),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               Padding(
                 padding: AppInsets.left10,
-                child: const Row(
+                child: Row(
                   children: [
-                    Icon(Icons.alarm),
+                    const Icon(Icons.alarm),
                     //TODO: days until complete
-                    Text("6"),
+                    Text(HomeUtils().getRemainedNumberOfDays(task.deadline)),
                   ],
                 ),
               ),
@@ -46,10 +50,13 @@ class TaskCard extends StatelessWidget {
                     width: 100,
                     height: 30,
                     decoration: BoxDecoration(
+                        //TODO: change color according to priority
                         color: AppColors.pink,
                         borderRadius: BorderRadius.circular(16.0),
                         border: Border.all(color: Colors.black)),
-                    child: const Center(child: Text("High"))),
+                    child: Center(
+                        child: Text(
+                            HomeUtils().getPriorityText(task.taskPriority)))),
               )
             ])
           ],

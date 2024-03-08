@@ -1,8 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:it_fest/constants/app_texts.dart';
 import 'package:it_fest/constants/insets.dart';
+import 'package:it_fest/models/task.dart';
 import 'package:it_fest/widgets/task_card.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -12,6 +11,35 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  List<Task> tasks = [
+    Task(
+        taskId: "0",
+        userId: "0",
+        name: "Task1",
+        description: "task task 1",
+        taskType: TaskType.daily,
+        taskPriority: TaskPriority.low,
+        deadline: "1710198631000", //11.03.2024
+        creationDate: "1709334631000"), //01.03.2024
+    Task(
+        taskId: "0",
+        userId: "0",
+        name: "Task1",
+        description: "task task 1",
+        taskType: TaskType.monthly,
+        taskPriority: TaskPriority.medium,
+        deadline: "1710198631000", //11.03.2024
+        creationDate: "1709334631000"), //01.03.2024
+    Task(
+        taskId: "0",
+        userId: "0",
+        name: "Task1",
+        description: "task task 1",
+        taskType: TaskType.halfYear,
+        taskPriority: TaskPriority.high,
+        deadline: "1710198631000", //11.03.2024
+        creationDate: "1709334631000") //01.03.2024
+  ];
   @override
   initState() {
     super.initState();
@@ -27,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
         body: Container(
           padding: AppInsets.leftRight20,
           height: MediaQuery.of(context).size.height * 0.7,
-          child: Column(children: [
+          child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -60,17 +88,14 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
             Container(
-              height: 170,
-              padding: AppInsets.top20,
-              child: ListView(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  //TODO: ListBuilder after data fetch
-                  children: List.generate(10, (int index) {
-                    //TODO: send data
-                    return TaskCard();
-                  })),
-            ),
+                height: 170,
+                padding: AppInsets.top20,
+                child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: tasks.length,
+                    itemBuilder: (context, index) => TaskCard(
+                          task: tasks[index],
+                        )))
           ]),
         ));
   }
