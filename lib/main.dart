@@ -1,7 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:it_fest/constants/app_colors.dart';
 import 'package:it_fest/firebase_options.dart';
-import 'package:it_fest/home/bottom_nav_bar.dart';
+import 'package:it_fest/screens/home/bottom_nav_bar.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,10 +18,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: "LifeSync",
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+        bottomAppBarTheme: BottomAppBarTheme(
+            color: AppColors.navBar,
+            surfaceTintColor: AppColors.navBar,
+            shadowColor: AppColors.navBar),
       ),
       home: const BottomNavBar(),
     );

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:it_fest/constants/app_colors.dart';
-import 'package:it_fest/home/home_screen.dart';
-import 'package:it_fest/profile/profile.dart';
-import 'package:it_fest/task/add_task.dart';
+import 'package:it_fest/screens/home/home_screen.dart';
+import 'package:it_fest/screens/profile/profile.dart';
+import 'package:it_fest/screens/task/add_task.dart';
 
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({Key? key}) : super(key: key);
@@ -35,7 +35,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
               MaterialPageRoute(builder: (context) => const AddTaskScreen()));
         },
         hoverElevation: 2,
-        //TODO: change color
         backgroundColor: AppColors.floatingNavBar,
         child: const Icon(
           Icons.add,
@@ -45,10 +44,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
         notchMargin: 1,
-        color: AppColors.navBar,
         shape: const CircularNotchedRectangle(),
-        child: Container(
-          color: AppColors.navBar,
+        child: SizedBox(
           height: 55,
           child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
