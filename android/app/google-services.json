@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "1076710305835",
+    "project_id": "itfest-4f403",
+    "storage_bucket": "itfest-4f403.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1076710305835:android:d21622af4a2fec15043a6e",
+        "android_client_info": {
+          "package_name": "com.example.it_fest"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1076710305835-o388uha4820lotefrntvdlellcrkr6tn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.it_fest",
+            "certificate_hash": "ede272b20187f0a90cf487eae2434793f5a02221"
+          }
+        },
+        {
+          "client_id": "1076710305835-tns907gobosb6d6vffbvklph36lv825p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3zxUzI7CN3E7PvgWJnEAczwHtOW5sd3g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1076710305835-tns907gobosb6d6vffbvklph36lv825p.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1076710305835-4bo7hvhs31af6gjs233d1mt1nkd387de.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.itFest"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
