@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:it_fest/screens/authentication/login_screen.dart';
 
 class RegisterScreen extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
@@ -58,12 +61,16 @@ class RegisterScreen extends StatelessWidget {
                   if (value!.isEmpty) {
                     return 'Please enter a password';
                   }
+                  if(value.length < 6){
+                    return 'Password must be at least 6 characters long';
+                  }
                   return null;
                 },
               ),
               TextFormField(
                 controller: _confirmPasswordController,
-                decoration: const InputDecoration(labelText: 'Confirm Password'),
+                decoration:
+                    const InputDecoration(labelText: 'Confirm Password'),
                 obscureText: true,
                 validator: (value) {
                   if (value!.isEmpty) {
@@ -79,7 +86,12 @@ class RegisterScreen extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    // Perform registration logic here
+                    addUserToDatabase(_nameController.text,
+                        _surnameController.text, _emailController.text);
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginScreen()),
+                    );
                   }
                 },
                 child: const Text('Register'),
@@ -90,4 +102,28 @@ class RegisterScreen extends StatelessWidget {
       ),
     );
   }
+
+  void addUserToDatabase(String name, String surname, String email) async {
+    // Perform database insertion logic here
+
+    UserCredential userCredentials = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      email: email,
+      password: _passwordController.text,
+    );
+
+    print(userCredentials.user!.uid);
+
+    FirebaseFirestore.instance.collection('accounts').doc(email).set({
+      'uid': userCredentials.user!.uid,
+      'firstName': name,
+      'lastName': surname,
+      'email': email,
+      'photoURL': '',
+      'friends': [],
+    });
+
+    
+  }
+
+  void saveUserToFirebaseAuth(String email, String text) {}
 }
