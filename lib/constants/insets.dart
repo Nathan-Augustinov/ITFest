@@ -7,5 +7,6 @@ class AppInsets {
   static EdgeInsets right5 = const EdgeInsets.only(right: 5);
   static EdgeInsets right10 = const EdgeInsets.only(right: 10);
   static EdgeInsets top10 = const EdgeInsets.only(top: 10);
+  static EdgeInsets top20 = const EdgeInsets.only(top: 20);
   static EdgeInsets bottom10 = const EdgeInsets.only(bottom: 10);
 }
