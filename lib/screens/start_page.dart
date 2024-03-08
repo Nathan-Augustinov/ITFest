@@ -31,11 +31,10 @@ class StartPage extends StatelessWidget {
 
 void _signOut(BuildContext context) async {
   await AuthenticationService().signOutFromGoogle();
-    if (context.mounted) {
-      
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => LoginScreen()),
-      );
-    }
+  if (context.mounted) {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => LoginScreen()),
+    );
+  }
 }
