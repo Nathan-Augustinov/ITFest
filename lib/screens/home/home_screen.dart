@@ -21,7 +21,8 @@ class _HomeScreenState extends State<HomeScreen> {
   late User? user;
   late Account _account;
   String _userName = '';
-
+  //TODO?
+  List<Goal> _tasks = [];
   List<Goal> userGoals = [];
 
 //TODO: urmatoarea saptamana taskuri
@@ -123,7 +124,7 @@ class _HomeScreenState extends State<HomeScreen> {
         //TODO: customize appBar
         body: Container(
       padding: AppInsets.leftRight20.copyWith(top: 50),
-      height: MediaQuery.of(context).size.height * 0.7,
+      // height: MediaQuery.of(context).size.height * 0.7,
       child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -178,7 +179,23 @@ class _HomeScreenState extends State<HomeScreen> {
                               goal: snapshot.data![index],
                             )));
               }
-            })
+            }),
+        const SizedBox(height: 30),
+        Text(
+          'Shared with friends tasks',
+          style: AppTexts.font16Bold,
+        ),
+        Expanded(
+          child: ListView.builder(
+              scrollDirection: Axis.vertical,
+              itemCount: _tasks.length,
+              itemBuilder: (context, index) => Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: TaskCard(
+                      goal: _tasks[index],
+                    ),
+                  )),
+        ),
       ]),
     ));
   }

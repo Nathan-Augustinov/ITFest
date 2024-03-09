@@ -7,6 +7,7 @@ import 'package:it_fest/screens/friends/add_friends.dart';
 import 'package:it_fest/screens/home/home_screen.dart';
 import 'package:it_fest/screens/profile/profile.dart';
 import 'package:it_fest/screens/task/add_task.dart';
+import 'package:it_fest/screens/task/all_tasks.dart';
 
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({Key? key}) : super(key: key);
@@ -18,7 +19,7 @@ class BottomNavBar extends StatefulWidget {
 class _BottomNavBarState extends State<BottomNavBar> {
   int currentTabIndex = 0;
   double iconSize = 24;
-  late Account account;
+  Account? account;
 
   @override
   void initState() {
@@ -111,14 +112,12 @@ class _BottomNavBarState extends State<BottomNavBar> {
                         onPressed: () {
                           //TODO: send data accordingly
                           setState(() {
-                            currentScreen = const ProfileScreen(
-                              account: null,
-                            );
+                            currentScreen = AllTasksScreen();
                             currentTabIndex = 2;
                           });
                         },
                         child: const Icon(
-                          Icons.person,
+                          Icons.task_alt_outlined,
                           color: Colors.white,
                           size: 20,
                         ),
@@ -138,7 +137,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                           });
                         },
                         child: const Icon(
-                          Icons.person,
+                          Icons.people_alt_outlined,
                           color: Colors.white,
                           size: 20,
                         ),
@@ -156,11 +155,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
                             currentScreen = ProfileScreen(
                               account: account,
                             );
-                            currentTabIndex = 2;
+                            currentTabIndex = 4;
                           });
                         },
                         child: const Icon(Icons.person,
-                            color: Colors.white, size: 10),
+                            color: Colors.white, size: 20),
                       ),
                     ],
                   ),
