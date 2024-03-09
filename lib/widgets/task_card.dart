@@ -17,7 +17,7 @@ class TaskCard extends StatelessWidget {
       child: Container(
         width: 230,
         decoration: BoxDecoration(
-          color: HomeUtils().getColorByType(goal.taskType),
+          color: HomeUtils().getColorByType(goal.goalType),
           borderRadius: BorderRadius.circular(16.0),
         ),
         child: Column(
@@ -41,7 +41,8 @@ class TaskCard extends StatelessWidget {
                       color: Colors.white,
                     ),
                     Text(
-                      HomeUtils().getRemainedNumberOfDays(goal.deadline),
+                      HomeUtils()
+                          .getRemainedNumberOfDays(goal.deadlineTimestamp),
                       style: AppTexts.font16Bold.copyWith(color: Colors.white),
                     ),
                   ],
@@ -54,12 +55,12 @@ class TaskCard extends StatelessWidget {
                     height: 30,
                     decoration: BoxDecoration(
                         color:
-                            HomeUtils().getColorByPriority(goal.taskPriority),
+                            HomeUtils().getColorByPriority(goal.goalPriority),
                         borderRadius: BorderRadius.circular(16.0),
                         border: Border.all(color: AppColors.background)),
                     child: Center(
                         child: Text(
-                            HomeUtils().getPriorityText(goal.taskPriority)))),
+                            HomeUtils().getPriorityText(goal.goalPriority)))),
               )
             ])
           ],

@@ -49,7 +49,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           return null;
                         },
                         decoration: InputDecoration(
-                          // hintText: AppLocalizations.of(context).first_name,
                           labelText: 'First Name',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(35),
@@ -75,7 +74,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           return null;
                         },
                         decoration: InputDecoration(
-                          // hintText: AppLocalizations.of(context).first_name,
                           labelText: 'Last Name',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(35),
@@ -101,7 +99,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           return null;
                         },
                         decoration: InputDecoration(
-                          // hintText: AppLocalizations.of(context).first_name,
                           labelText: 'Email',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(35),
@@ -131,28 +128,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           return null;
                         },
                         decoration: InputDecoration(
-                          // hintText: AppLocalizations.of(context).first_name,
                           labelText: 'Password',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(35),
                           ),
                           suffixIcon: Padding(
-                              padding:  const EdgeInsets.all(15.0),
-                              child: InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    _passwordObscureText = !_passwordObscureText;
-                                  });
-                                },
-                                child: _passwordObscureText
-                                    ? const Icon(Icons.visibility,
-                                        color: AppColors.pink)
-                                    : const Icon(
-                                        Icons.visibility_off,
-                                        color: AppColors.yellow,
-                                      ),
-                              ),
+                            padding: const EdgeInsets.all(15.0),
+                            child: InkWell(
+                              onTap: () {
+                                setState(() {
+                                  _passwordObscureText = !_passwordObscureText;
+                                });
+                              },
+                              child: _passwordObscureText
+                                  ? const Icon(Icons.visibility,
+                                      color: AppColors.pink)
+                                  : const Icon(
+                                      Icons.visibility_off,
+                                      color: AppColors.yellow,
+                                    ),
                             ),
+                          ),
                           focusColor: AppColors.orange,
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(35),
@@ -178,28 +174,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           return null;
                         },
                         decoration: InputDecoration(
-                          // hintText: AppLocalizations.of(context).first_name,
                           labelText: 'Confirm Password',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(35),
                           ),
                           suffixIcon: Padding(
-                              padding:  const EdgeInsets.all(15.0),
-                              child: InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    _confirmPasswordObscureText = !_confirmPasswordObscureText;
-                                  });
-                                },
-                                child: _confirmPasswordObscureText
-                                    ? const Icon(Icons.visibility,
-                                        color: AppColors.pink)
-                                    : const Icon(
-                                        Icons.visibility_off,
-                                        color: AppColors.yellow,
-                                      ),
-                              ),
+                            padding: const EdgeInsets.all(15.0),
+                            child: InkWell(
+                              onTap: () {
+                                setState(() {
+                                  _confirmPasswordObscureText =
+                                      !_confirmPasswordObscureText;
+                                });
+                              },
+                              child: _confirmPasswordObscureText
+                                  ? const Icon(Icons.visibility,
+                                      color: AppColors.pink)
+                                  : const Icon(
+                                      Icons.visibility_off,
+                                      color: AppColors.yellow,
+                                    ),
                             ),
+                          ),
                           focusColor: AppColors.orange,
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(35),
@@ -228,10 +224,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ),
                             ),
                             child: const Text(
-                              // AppLocalizations.of(context).login,
                               'Register',
                               style: TextStyle(
-                                // color: Colors.white,
                                 fontFamily: 'Montserrat',
                               ),
                             ),
@@ -239,26 +233,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               bool emailIsValid = EmailValidator.validate(
                                   _emailController.text);
                               if (_formKey.currentState!.validate()) {
-                                if(emailIsValid == false){
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text(
-                                            'Please enter a valid email'),
-                                      ),
-                                    );
-                                  }
-                                  else{
-                                    addUserToDatabase(
+                                if (emailIsValid == false) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content:
+                                          Text('Please enter a valid email'),
+                                    ),
+                                  );
+                                } else {
+                                  addUserToDatabase(
                                       _nameController.text,
                                       _surnameController.text,
                                       _emailController.text);
-                                    Navigator.pushReplacement(
-                                      context,MaterialPageRoute(
-                                          builder: (context) =>
-                                              const LoginScreen()),
-                                    );
-                                  }
-                                
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const LoginScreen()),
+                                  );
+                                }
                               }
                             },
                           ),
@@ -279,8 +272,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       email: email,
       password: _passwordController.text,
     );
-
-    print(userCredentials.user!.uid);
 
     FirebaseFirestore.instance.collection('accounts').doc(email).set({
       'uid': userCredentials.user!.uid,

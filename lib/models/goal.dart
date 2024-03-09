@@ -1,23 +1,23 @@
 //TODO: rename?
 class Goal {
-  final String taskId;
-  final String userId;
-  final String name;
-  final String description;
-  final TaskType taskType;
-  final TaskPriority taskPriority;
-  final String deadline; //timestamp
-  final String creationDate; //timestamp
+  final String goalId;
+  final String userId; //userEmail
+  String name;
+  String description;
+  TaskType goalType;
+  TaskPriority goalPriority;
+  String deadlineTimestamp; //timestamp
+  String createdTimestamp; //timestamp
 
   Goal({
-    required this.taskId,
+    required this.goalId,
     required this.userId,
     required this.name,
     required this.description,
-    required this.taskType,
-    required this.taskPriority,
-    required this.deadline,
-    required this.creationDate,
+    required this.goalType,
+    required this.goalPriority,
+    required this.deadlineTimestamp,
+    required this.createdTimestamp,
   });
 }
 
