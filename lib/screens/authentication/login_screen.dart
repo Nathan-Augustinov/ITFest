@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:it_fest/screens/authentication/_utilities.dart';
 import 'package:it_fest/screens/authentication/register_screen.dart';
 import 'package:it_fest/screens/start_page.dart';
 import '../../services/google_authentication.dart';
@@ -135,6 +136,9 @@ class LoginScreen extends StatelessWidget {
           .doc(email)
           .update({'uid': user!.uid});
       print('User logged in: ${user.email}');
+
+      // Save user email in sharedPreferences
+      AuthUtilities().saveUserEmail(user.email ?? "");
     } catch (e) {
       // Error occurred while logging in
       print('Error logging in: $e');

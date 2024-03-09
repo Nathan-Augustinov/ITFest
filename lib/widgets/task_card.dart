@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:it_fest/constants/app_colors.dart';
+import 'package:it_fest/constants/app_texts.dart';
 import 'package:it_fest/constants/insets.dart';
-import 'package:it_fest/models/task.dart';
+import 'package:it_fest/models/goal.dart';
 import 'package:it_fest/screens/home/_utilities.dart';
 
 class TaskCard extends StatelessWidget {
-  const TaskCard({required this.task, super.key});
+  const TaskCard({required this.goal, super.key});
 
-  final Task task;
+  final Goal goal;
 
-  //TODO: change hardcoded texts
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -17,8 +17,7 @@ class TaskCard extends StatelessWidget {
       child: Container(
         width: 230,
         decoration: BoxDecoration(
-          //TODO: color accordingly to task
-          color: HomeUtils().getColorByType(task.taskType),
+          color: HomeUtils().getColorByType(goal.taskType),
           borderRadius: BorderRadius.circular(16.0),
         ),
         child: Column(
@@ -29,8 +28,7 @@ class TaskCard extends StatelessWidget {
               children: [
                 Padding(
                     padding: AppInsets.leftRightTopBottom10,
-                    child: Text(task.name)),
-                //TODO: set priority name accordingly
+                    child: Text(goal.name)),
               ],
             ),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -38,9 +36,14 @@ class TaskCard extends StatelessWidget {
                 padding: AppInsets.left10,
                 child: Row(
                   children: [
-                    const Icon(Icons.alarm),
-                    //TODO: days until complete
-                    Text(HomeUtils().getRemainedNumberOfDays(task.deadline)),
+                    const Icon(
+                      Icons.alarm,
+                      color: Colors.white,
+                    ),
+                    Text(
+                      HomeUtils().getRemainedNumberOfDays(goal.deadline),
+                      style: AppTexts.font16Bold.copyWith(color: Colors.white),
+                    ),
                   ],
                 ),
               ),
@@ -50,13 +53,13 @@ class TaskCard extends StatelessWidget {
                     width: 100,
                     height: 30,
                     decoration: BoxDecoration(
-                        //TODO: change color according to priority
-                        color: AppColors.pink,
+                        color:
+                            HomeUtils().getColorByPriority(goal.taskPriority),
                         borderRadius: BorderRadius.circular(16.0),
-                        border: Border.all(color: Colors.black)),
+                        border: Border.all(color: AppColors.background)),
                     child: Center(
                         child: Text(
-                            HomeUtils().getPriorityText(task.taskPriority)))),
+                            HomeUtils().getPriorityText(goal.taskPriority)))),
               )
             ])
           ],

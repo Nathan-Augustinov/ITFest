@@ -1,4 +1,5 @@
-class Task {
+//TODO: rename?
+class Goal {
   final String taskId;
   final String userId;
   final String name;
@@ -8,7 +9,7 @@ class Task {
   final String deadline; //timestamp
   final String creationDate; //timestamp
 
-  Task({
+  Goal({
     required this.taskId,
     required this.userId,
     required this.name,

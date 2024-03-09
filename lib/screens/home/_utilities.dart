@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:it_fest/constants/app_colors.dart';
-import 'package:it_fest/models/task.dart';
+import 'package:it_fest/models/goal.dart';
 
 class HomeUtils {
   String getRemainedNumberOfDays(String deadlineTimestamp) {
@@ -22,12 +22,23 @@ class HomeUtils {
     }
   }
 
+  Color getColorByPriority(TaskPriority priority) {
+    switch (priority) {
+      case TaskPriority.low:
+        return AppColors.lightGreen;
+      case TaskPriority.medium:
+        return AppColors.lightPurple;
+      case TaskPriority.high:
+        return AppColors.lightOrange;
+    }
+  }
+
   Color getColorByType(TaskType type) {
     switch (type) {
       case TaskType.daily:
         return AppColors.green;
       case TaskType.monthly:
-        return AppColors.yellow;
+        return AppColors.purple;
       case TaskType.halfYear:
         return AppColors.orange;
     }
