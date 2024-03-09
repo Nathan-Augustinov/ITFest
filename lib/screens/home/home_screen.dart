@@ -4,9 +4,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:it_fest/constants/app_colors.dart';
 import 'package:it_fest/constants/app_texts.dart';
 import 'package:it_fest/constants/insets.dart';
 import 'package:it_fest/models/goal.dart';
+import 'package:it_fest/screens/goals/goal_details_screen.dart';
 import 'package:it_fest/screens/home/_utilities.dart';
 import 'package:it_fest/widgets/task_card.dart';
 
@@ -18,14 +20,10 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late User? user;
-  // late Account _account;
   String _userName = '';
   String _photoURL = '';
-  //TODO?
-  List<Goal> _tasks = [];
-  List<Goal> userGoals = [];
 
-//TODO: urmatoarea saptamana taskuri
+  //TODO: urmatoarea saptamana taskuri
   @override
   initState() {
     super.initState();
@@ -40,8 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //TODO: not working properly
-    void uploadProfilePicture() async {
+      void uploadProfilePicture() async {
       final image = await ImagePicker().pickImage(
           source: ImageSource.gallery,
           maxHeight: 512,
@@ -50,38 +47,34 @@ class _HomeScreenState extends State<HomeScreen> {
 
       String userEmail = user?.email ?? "";
 
-      Reference ref =
-          FirebaseStorage.instance.ref().child("${userEmail}_profilepic.jpg");
-      await ref.putFile(File(image!.path));
-      ref.getDownloadURL().then((value) {
-        if (mounted) {
-          setState(() {
-            // _account.photoURL = value;
-            _photoURL = value;
-          });
-        }
-      });
-      FirebaseFirestore.instance
-          .collection('accounts')
-          .get()
-          .then((value) => value.docs.forEach((element) {
-                if (element.id == userEmail) {
-                  var docRef = FirebaseFirestore.instance
-                      .collection('accounts')
-                      .doc(element.id);
-                  if (element['photoURL'] != "") {
-                    // docRef.update({'photoURL': _account.photoURL});
-                    docRef.update({'photoURL': _photoURL});
-                  }
+    Reference ref =
+        FirebaseStorage.instance.ref().child("${userEmail}_profilepic.jpg");
+    await ref.putFile(File(image!.path));
+    ref.getDownloadURL().then((value) {
+      if (mounted) {
+        setState(() {
+          _photoURL = value;
+        });
+      }
+    });
+    FirebaseFirestore.instance
+        .collection('accounts')
+        .get()
+        .then((value) => value.docs.forEach((element) {
+              if (element.id == userEmail) {
+                var docRef = FirebaseFirestore.instance
+                    .collection('accounts')
+                    .doc(element.id);
+                if (element['photoURL'] != "") {
+                  docRef.update({'photoURL': _photoURL});
                 }
-              }));
-    }
+              }
+            }));
+  }
 
     return Scaffold(
-        //TODO: customize appBar
         body: Container(
       padding: AppInsets.leftRight20.copyWith(top: 50),
-      // height: MediaQuery.of(context).size.height * 0.7,
       child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -149,8 +142,18 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: snapshot.data!.length,
-                        itemBuilder: (context, index) => GoalCard(
-                              goal: snapshot.data![index],
+                        itemBuilder: (context, index) => GestureDetector(
+                              onTap: () => {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => GoalDetailsScreen(
+                                              goal: snapshot.data![index],
+                                            )))
+                              },
+                              child: GoalCard(
+                                goal: snapshot.data![index],
+                              ),
                               insets: null,
                             )));
               }
