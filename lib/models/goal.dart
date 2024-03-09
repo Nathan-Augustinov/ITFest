@@ -1,7 +1,7 @@
 //TODO: rename?
 class Goal {
   final String goalId;
-  final String userId; //userEmail
+  final String userEmail; //userEmail
   String name;
   String description;
   TaskType goalType;
@@ -11,7 +11,7 @@ class Goal {
 
   Goal({
     required this.goalId,
-    required this.userId,
+    required this.userEmail,
     required this.name,
     required this.description,
     required this.goalType,
