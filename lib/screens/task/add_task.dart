@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -19,70 +20,89 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   static const List<String> _typeItems = ["Daily", "A month", "Half a year"];
   static const List<String> _priorityItems = ["Low", "High", "Medium"];
   Goal goal = Goal(
-    name: "",
-    description: "",
-    deadlineTimestamp: "",
-    createdTimestamp: "",
-    goalId: "",
-    userEmail: "",
-    goalPriority: TaskPriority.low,
-    goalType: TaskType.daily,
-  );
-  //TODO: list should be fetched from db
-  final List<Account> _friendList = [
-    Account(
-      uid: "id",
-      firstName: "firstName",
-      lastName: "lastname",
-      email: "email",
-      photoURL: "",
-      friendsIds: ["email", "email"],
-    ),
-    Account(
-      uid: "id",
-      firstName: "firstName 1",
-      lastName: "lastname 1",
-      email: "email",
-      photoURL: "",
-      friendsIds: ["email", "email"],
-    ),
-    Account(
-      uid: "id",
-      firstName: "firstName 2",
-      lastName: "lastname 2",
-      email: "email",
-      photoURL: "",
-      friendsIds: ["email", "email"],
-    ),
-    Account(
-      uid: "id",
-      firstName: "firstName 3",
-      lastName: "lastname 3",
-      email: "email",
-      photoURL: "",
-      friendsIds: ["email", "email"],
-    )
-  ];
+      name: "",
+      description: "",
+      deadlineTimestamp: "",
+      createdTimestamp: "",
+      goalId: "",
+      userEmail: "",
+      goalPriority: TaskPriority.low,
+      goalType: TaskType.daily);
+  String userEmail = "";
+  List<String> _friendsEmails = [];
+  List<Account> _friends = [];
 
   @override
   initState() {
     super.initState();
+    setState(() {
+      userEmail = FirebaseAuth.instance.currentUser?.email ?? "";
+    });
   }
 
-  //TODO: should be initialize with the account list
-  List<bool> _checkBoxes = [false, false, false, false];
+  Future<List<Account>> getFriendAccounts() async {
+    List<Account> friendAccounts = [];
+
+    final currentUserDoc = await FirebaseFirestore.instance
+        .collection('accounts')
+        .doc(userEmail)
+        .get();
+    final friendsArray = currentUserDoc.data()?['friends'] as List<dynamic>;
+
+    if (friendsArray.isNotEmpty) {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('accounts')
+          .where('email', whereIn: friendsArray.cast<String>())
+          .get();
+
+      friendAccounts = querySnapshot.docs.map((doc) {
+        return Account(
+          uid: doc['uid'],
+          firstName: doc['firstName'],
+          lastName: doc['lastName'],
+          email: doc['email'],
+          photoURL: doc['photoURL'],
+        );
+      }).toList();
+    }
+
+    return friendAccounts;
+  }
+
+  List<bool> _checkBoxes = [];
   String? _typeSelectedValue;
   String? _prioritySelectedValue;
 
-  showCheckBoxDialog() {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return CheckboxDialog(
-            friendList: _friendList,
-            checkboxStates: _checkBoxes,
-          );
-        });
+  Future<void> showCheckBoxDialog(BuildContext context) async {
+    List<Account> friendList = await getFriendAccounts();
+
+    setState(() {
+      if (_checkBoxes.isEmpty) {
+        _checkBoxes = List<bool>.filled(friendList.length, false);
+      }
+      _friends = friendList;
+    });
+
+    if (context.mounted) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return CheckboxDialog(
+              friendList: friendList,
+              checkboxStates: _checkBoxes,
+            );
+          });
+    }
+  }
+
+  void _createListOfCheckedFriends() {
+    int index = 0;
+    _checkBoxes.forEach((element) {
+      if (element) {
+        _friendsEmails.add(_friends[index].email);
+      }
+      index++;
+    });
   }
 
   //TODO: clear fields after save
@@ -91,6 +111,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     return Scaffold(
         appBar: AppBar(
           title: const Text("Add personal goal"),
+          backgroundColor: AppColors.background,
         ),
         //TODO: add legend
         body: Container(
@@ -220,7 +241,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                           style: TextStyle(color: Colors.white, fontSize: 18),
                           textAlign: TextAlign.center,
                         ),
-                        onPressed: () => showCheckBoxDialog()),
+                        onPressed: () => showCheckBoxDialog(context)),
                   ),
                 ),
                 const SizedBox(
@@ -238,7 +259,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                     ),
                     child: TextButton(
                         child: const Text(
-                          "Add personal goal",
+                          "Create",
                           style: TextStyle(color: Colors.white, fontSize: 18),
                           textAlign: TextAlign.center,
                         ),
@@ -253,7 +274,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                               goal.goalType =
                                   returnTaskType(_typeSelectedValue ?? "");
                             });
-                            addPersonalGoalToForebase(goal, userEmail);
+                            _createListOfCheckedFriends();
+                            addPersonalGoalToForebase(
+                                goal, userEmail, _friendsEmails);
                           }
                         }),
                   ),

@@ -31,17 +31,16 @@ class _BottomNavBarState extends State<BottomNavBar> {
     final currentUser = FirebaseAuth.instance.currentUser!;
     final currentUserDoc = await FirebaseFirestore.instance
         .collection('accounts')
-        .doc(currentUser?.email)
+        .doc(currentUser.email)
         .get();
-    setState(() { 
+    setState(() {
       account = Account(
-                  uid: currentUser.uid, 
-                  firstName: currentUserDoc.data()?['firstName'], 
-                  lastName: currentUserDoc.data()?['lastName'], 
-                  email: currentUserDoc.data()?['email'], 
-                  photoURL: currentUserDoc.data()?['photoURL'], 
-                  friendsIds: List<String>.from(currentUserDoc.data()?['friends'] ?? []),
-                );
+        uid: currentUser.uid,
+        firstName: currentUserDoc.data()?['firstName'],
+        lastName: currentUserDoc.data()?['lastName'],
+        email: currentUserDoc.data()?['email'],
+        photoURL: currentUserDoc.data()?['photoURL'],
+      );
     });
   }
 
