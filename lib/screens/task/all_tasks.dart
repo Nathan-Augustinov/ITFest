@@ -18,17 +18,17 @@ class AllTasksScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('All Tasks'),
       ),
-      body: Expanded(
-          child: ListView.builder(
-              scrollDirection: Axis.vertical,
-              itemCount: _tasks.length,
-              itemBuilder: (context, index) => Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: TaskCard(
-                      goal: _tasks[index],
-                    ),
-                  )),
-        ),
+      // body: Expanded(
+      //     child: ListView.builder(
+      //         scrollDirection: Axis.vertical,
+      //         itemCount: _tasks.length,
+      //         itemBuilder: (context, index) => Padding(
+      //               padding: const EdgeInsets.only(bottom: 10),
+      //               child: TaskCard(
+      //                 goal: _tasks[index],
+      //               ),
+      //             )),
+      //   ),
     );
   }
 }

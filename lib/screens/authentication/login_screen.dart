@@ -149,11 +149,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                   loginUserWithEmailAndPassword(
                                       _emailController.text,
                                       _passwordController.text);
-                                  Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const BottomNavBar()));
                                 }
                               }
                             }),
@@ -285,17 +280,33 @@ class _LoginScreenState extends State<LoginScreen> {
       );
       // User logged in successfully
       User? user = userCredential.user;
-      FirebaseFirestore.instance
-          .collection('accounts')
-          .doc(email)
-          .update({'uid': user!.uid});
+      if (user != null){
+        FirebaseFirestore.instance
+            .collection('accounts')
+            .doc(email)
+            .update({'uid': user!.uid});
       print('User logged in: ${user.email}');
-
+      
+        // ignore: use_build_context_synchronously
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    const BottomNavBar()));
+      }
       // Save user email in sharedPreferences
       // AuthUtilities().saveUserEmail(user.email ?? "");
-    } catch (e) {
-      // Error occurred while logging in
-      print('Error logging in: $e');
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            backgroundColor: AppColors.lightGreen,
+            content: Text('User not found for email: $email')));
+      } else if (e.code == 'wrong-password') {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            backgroundColor: AppColors.lightGreen,
+            content:
+                Text('Wrong password provided for user with email: $email')));
+      }
     }
   }
 }
