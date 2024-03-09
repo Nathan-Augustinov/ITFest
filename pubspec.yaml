@@ -40,6 +40,9 @@ dependencies:
   google_sign_in: ^6.2.1
   cloud_firestore: ^4.15.8
   email_validator: ^2.1.17
+  image_picker: ^1.0.7
+  firebase_storage: ^11.6.9
+  shared_preferences: ^2.2.2
 
 dev_dependencies:
   flutter_test:

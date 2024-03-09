@@ -1,9 +1,14 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:it_fest/constants/app_colors.dart';
+import 'package:it_fest/constants/app_texts.dart';
 import 'package:it_fest/constants/insets.dart';
+import 'package:it_fest/models/goal.dart';
+import 'package:it_fest/screens/home/_utilities.dart';
 
 class TaskCard extends StatelessWidget {
-  const TaskCard({super.key});
+  const TaskCard({required this.goal, super.key});
+
+  final Goal goal;
 
   @override
   Widget build(BuildContext context) {
@@ -12,11 +17,52 @@ class TaskCard extends StatelessWidget {
       child: Container(
         width: 230,
         decoration: BoxDecoration(
-          color: AppColors.pink,
+          color: HomeUtils().getColorByType(goal.taskType),
           borderRadius: BorderRadius.circular(16.0),
         ),
-        child: const Column(
-          children: [Text("Task name")],
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                    padding: AppInsets.leftRightTopBottom10,
+                    child: Text(goal.name)),
+              ],
+            ),
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              Padding(
+                padding: AppInsets.left10,
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.alarm,
+                      color: Colors.white,
+                    ),
+                    Text(
+                      HomeUtils().getRemainedNumberOfDays(goal.deadline),
+                      style: AppTexts.font16Bold.copyWith(color: Colors.white),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: AppInsets.leftRightTopBottom10,
+                child: Container(
+                    width: 100,
+                    height: 30,
+                    decoration: BoxDecoration(
+                        color:
+                            HomeUtils().getColorByPriority(goal.taskPriority),
+                        borderRadius: BorderRadius.circular(16.0),
+                        border: Border.all(color: AppColors.background)),
+                    child: Center(
+                        child: Text(
+                            HomeUtils().getPriorityText(goal.taskPriority)))),
+              )
+            ])
+          ],
         ),
       ),
     );
