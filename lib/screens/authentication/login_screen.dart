@@ -1,7 +1,6 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:it_fest/screens/authentication/_utilities.dart';
 import 'package:it_fest/constants/app_colors.dart';
 import 'package:it_fest/screens/authentication/register_screen.dart';
 import 'package:it_fest/screens/home/bottom_nav_bar.dart';
@@ -22,8 +21,6 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _obscureText = true;
 
   final AuthenticationService _googleAuthService = AuthenticationService();
-
-  // LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +47,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           keyboardType: TextInputType.emailAddress,
                           controller: _emailController,
                           decoration: InputDecoration(
-                              // hintText: AppLocalizations.of(context).email,
                               labelText: 'Email',
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(35),
@@ -77,7 +73,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: TextFormField(
                         controller: _passwordController,
                         decoration: InputDecoration(
-                          // hintText: AppLocalizations.of(context).password,
                           labelText: 'Password',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(35),
@@ -132,7 +127,6 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                             child: const Text(
-                              // AppLocalizations.of(context).login,
                               'Login',
                               style: TextStyle(
                                 // color: Colors.white,
@@ -158,7 +152,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                   Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => const BottomNavBar()));
+                                          builder: (context) =>
+                                              const BottomNavBar()));
                                 }
                               }
                             }),
@@ -191,15 +186,13 @@ class _LoginScreenState extends State<LoginScreen> {
                             width: 24,
                             height: 24,
                           ),
-                          label: const Text('Sign in  with Google'),
+                          label: const Text('Sign in with Google'),
                           onPressed: () async {
                             // Add your logic for logging in with Google here
                             User? user =
                                 await _googleAuthService.signInWithGoogle();
 
                             if (user != null && context.mounted) {
-                              // Navigate to Home Screen
-
                               // Add account to Firestore
                               FirebaseFirestore.instance
                                   .collection('accounts')
@@ -216,7 +209,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => const BottomNavBar()));
+                                      builder: (context) =>
+                                          const BottomNavBar()));
                             }
                           },
                         ),
@@ -264,14 +258,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           TextButton(
                             style: TextButton.styleFrom(
                                 foregroundColor: AppColors.pink),
-                            child: const Text(
-                                // AppLocalizations.of(context).create_account),
-                                'Create Account'),
+                            child: const Text('Create Account'),
                             onPressed: () {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => RegisterScreen()));
+                                      builder: (context) =>
+                                          const RegisterScreen()));
                             },
                           ),
                         ],
