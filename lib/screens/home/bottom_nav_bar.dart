@@ -17,7 +17,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
   final List screens = [
     const HomeScreen(),
     const AddTaskScreen(),
-    const ProfileScreen()
+    const ProfileScreen(
+      account: null,
+    )
   ];
 
   final PageStorageBucket bucket = PageStorageBucket();
@@ -72,8 +74,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
                   children: [
                     MaterialButton(
                       onPressed: () {
+                        //TODO: send data accordingly
                         setState(() {
-                          currentScreen = const ProfileScreen();
+                          currentScreen = const ProfileScreen(
+                            account: null,
+                          );
                           currentTabIndex = 2;
                         });
                       },
