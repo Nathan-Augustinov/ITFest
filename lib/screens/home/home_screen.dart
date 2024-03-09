@@ -38,6 +38,215 @@ class _HomeScreenState extends State<HomeScreen> {
 
 //TODO: show latest goals
 
+  @override
+  Widget build(BuildContext context) {
+    //TODO: not working properly
+    void uploadProfilePicture() async {
+      final image = await ImagePicker().pickImage(
+          source: ImageSource.gallery,
+          maxHeight: 512,
+          maxWidth: 512,
+          imageQuality: 75);
+
+      String userEmail = user?.email ?? "";
+
+      Reference ref =
+          FirebaseStorage.instance.ref().child("${userEmail}_profilepic.jpg");
+      await ref.putFile(File(image!.path));
+      ref.getDownloadURL().then((value) {
+        if (mounted) {
+          setState(() {
+            // _account.photoURL = value;
+            _photoURL = value;
+          });
+        }
+      });
+      FirebaseFirestore.instance
+          .collection('accounts')
+          .get()
+          .then((value) => value.docs.forEach((element) {
+                if (element.id == userEmail) {
+                  var docRef = FirebaseFirestore.instance
+                      .collection('accounts')
+                      .doc(element.id);
+                  if (element['photoURL'] != "") {
+                    // docRef.update({'photoURL': _account.photoURL});
+                    docRef.update({'photoURL': _photoURL});
+                  }
+                }
+              }));
+    }
+
+    return Scaffold(
+        //TODO: customize appBar
+        body: Container(
+      padding: AppInsets.leftRight20.copyWith(top: 50),
+      // height: MediaQuery.of(context).size.height * 0.7,
+      child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            GestureDetector(
+              onTap: () => uploadProfilePicture(),
+              child: CircleAvatar(
+                radius: 35,
+                backgroundImage:
+                    //TODO: if user has image ( NetworkImage('https://picsum.photos/id/237/200/300'),) put image else
+                    // AssetImage('assets/images/empty_profile_pic.jpg'),
+                    _photoURL.startsWith('http')
+                        ? NetworkImage(_photoURL)
+                        : AssetImage(_photoURL) as ImageProvider,
+              ),
+            ),
+            //TODO: remove hardcoded code
+            Padding(
+                padding: AppInsets.left10,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    //TODO: if user has name show name else show loading
+                    Text(
+                      _userName.isEmpty ? 'Loading...' : _userName,
+                      style: AppTexts.font16Bold.copyWith(fontSize: 20),
+                    ),
+                    //TODO: if has tasks change text
+                    Padding(
+                      padding: AppInsets.top10,
+                      child: FutureBuilder<int>(
+                        future: countTasksWithTodayDeadline(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(child: CircularProgressIndicator());
+                          } else if (snapshot.hasError) {
+                            return Center(child: Text('Error: ${snapshot.error}'));
+                          } else {
+                            return Text(
+                              snapshot.data == 0
+                                  ? 'No tasks for today'
+                                  : 'You have ${snapshot.data} tasks due today',
+                              style: AppTexts.font16Normal
+                              );
+                          }
+                        }
+                      ),
+                    )
+                  ],
+                )),
+          ],
+        ),
+        FutureBuilder<List<Goal>>(
+            future: getUpcomingGoals(user?.email ?? ""),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              } else {
+                return Container(
+                    height: 170,
+                    padding: AppInsets.top20,
+                    child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: snapshot.data!.length,
+                        itemBuilder: (context, index) => GoalCard(
+                              goal: snapshot.data![index],
+                              insets: null,
+                            )));
+              }
+            }),
+        const SizedBox(height: 30),
+        Text(
+          'Shared with friends',
+          style: AppTexts.font16Bold,
+        ),
+        FutureBuilder<List<Goal>>(
+            future: getGoalsSharedForUser(user?.email ?? ""),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              } else {
+                return Expanded(
+                  child: ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, index) => Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: GoalCard(
+                              goal: snapshot.data![index],
+                              insets: const EdgeInsets.all(0)
+                            ),
+                          )),
+                );
+              }
+            }),
+      ]),
+    ));
+  }
+
+  Future<String> getUserFirstAndLastName(String email) async {
+    String firstName = "";
+    String lastName = "";
+    await FirebaseFirestore.instance
+        .collection('accounts')
+        .get()
+        .then((value) => value.docs.forEach((element) {
+              if (element.id == email) {
+                firstName = element['firstName'];
+                lastName = element['lastName'];
+              }
+            }));
+
+    return "$firstName $lastName";
+  }
+
+  Future<void> _fetchUserName(email) async {
+    String userName = await getUserFirstAndLastName(email);
+    setState(() {
+      _userName = userName;
+    });
+  }
+
+  void _fetchUserProfilePicture(String email) async {
+    String fileName = "${email}_profilepic.jpg";
+
+    try {
+      String url =
+          await FirebaseStorage.instance.ref().child(fileName).getDownloadURL();
+      setState(() {
+        _photoURL = url;
+      });
+    } catch (e) {
+      if (user?.photoURL != null) {
+        setState(() {
+          _photoURL = user!.photoURL!;
+        });
+      } else {
+        setState(() {
+          _photoURL = 'assets/images/empty_profile_pic.jpg';
+        });
+      }
+    }
+  }
+
+  Future<List<Goal>> getUpcomingGoals(String userEmail) async {
+    List<Goal> upcomingGoals = [];
+    List<Goal> allUserGoals = await getGoalsForUser(userEmail);
+
+    for (Goal goal in allUserGoals) {
+      DateTime deadline = DateTime.fromMillisecondsSinceEpoch(
+          int.parse(goal.deadlineTimestamp));
+      if (deadline.isAfter(DateTime.now()) &&
+          deadline.isBefore(DateTime.now().add(const Duration(days: 7)))) {
+        upcomingGoals.add(goal);
+      }
+    }
+
+    return upcomingGoals;
+  }
+
   Future<List<Goal>> getGoalsForUser(String userEmail) async {
     List<Goal> userGoals = [];
 
@@ -114,180 +323,22 @@ class _HomeScreenState extends State<HomeScreen> {
     return userSharedGoals;
   }
 
-  //TODO: not working properly
-  void uploadProfilePicture() async {
-    final image = await ImagePicker().pickImage(
-        source: ImageSource.gallery,
-        maxHeight: 512,
-        maxWidth: 512,
-        imageQuality: 75);
+  Future<int> countTasksWithTodayDeadline() async {
+    int count = 0;
+    String userEmail = FirebaseAuth.instance.currentUser!.email!;
+    List<Goal> userGoals = await getGoalsForUser(userEmail);
+    List<Goal> userSharedGoals = await getGoalsSharedForUser(userEmail);
+    List<Goal> allGoals = [...userGoals, ...userSharedGoals];
+    var uniqueGoals = <String, Goal>{};
+    for (var goal in allGoals) {
+      uniqueGoals[goal.goalId] = goal;
+    }
 
-    String userEmail = user?.email ?? "";
-
-    Reference ref =
-        FirebaseStorage.instance.ref().child("${userEmail}_profilepic.jpg");
-    await ref.putFile(File(image!.path));
-    ref.getDownloadURL().then((value) {
-      if (mounted) {
-        setState(() {
-          // _account.photoURL = value;
-          _photoURL = value;
-        });
-      }
-    });
-    FirebaseFirestore.instance
-        .collection('accounts')
-        .get()
-        .then((value) => value.docs.forEach((element) {
-              if (element.id == userEmail) {
-                var docRef = FirebaseFirestore.instance
-                    .collection('accounts')
-                    .doc(element.id);
-                if (element['photoURL'] != "") {
-                  // docRef.update({'photoURL': _account.photoURL});
-                  docRef.update({'photoURL': _photoURL});
-                }
-              }
-            }));
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        //TODO: customize appBar
-        body: Container(
-      padding: AppInsets.leftRight20.copyWith(top: 50),
-      // height: MediaQuery.of(context).size.height * 0.7,
-      child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            GestureDetector(
-              onTap: () => uploadProfilePicture(),
-              child: CircleAvatar(
-                radius: 35,
-                backgroundImage:
-                    //TODO: if user has image ( NetworkImage('https://picsum.photos/id/237/200/300'),) put image else
-                    // AssetImage('assets/images/empty_profile_pic.jpg'),
-                    _photoURL.startsWith('http')
-                        ? NetworkImage(_photoURL)
-                        : AssetImage(_photoURL) as ImageProvider,
-              ),
-            ),
-            //TODO: remove hardcoded code
-            Padding(
-                padding: AppInsets.left10,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    //TODO: if user has name show name else show loading
-                    Text(
-                      _userName.isEmpty ? 'Loading...' : _userName,
-                      style: AppTexts.font16Bold.copyWith(fontSize: 20),
-                    ),
-                    //TODO: if has tasks change text
-                    Padding(
-                      padding: AppInsets.top10,
-                      child: Text(
-                        "You have no tasks due today!",
-                        style: AppTexts.font14Normal,
-                      ),
-                    )
-                  ],
-                )),
-          ],
-        ),
-        FutureBuilder<List<Goal>>(
-            future: getGoalsForUser(user?.email ?? ""),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}'));
-              } else {
-                return Container(
-                    height: 170,
-                    padding: AppInsets.top20,
-                    child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: snapshot.data!.length,
-                        itemBuilder: (context, index) => GoalCard(
-                              goal: snapshot.data![index],
-                            )));
-              }
-            }),
-        const SizedBox(height: 30),
-        Text(
-          'Shared with friends',
-          style: AppTexts.font16Bold,
-        ),
-        FutureBuilder<List<Goal>>(
-            future: getGoalsSharedForUser(user?.email ?? ""),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}'));
-              } else {
-                return Expanded(
-                  child: ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      itemCount: snapshot.data!.length,
-                      itemBuilder: (context, index) => Padding(
-                            padding: const EdgeInsets.only(bottom: 10),
-                            child: GoalCard(
-                              goal: snapshot.data![index],
-                            ),
-                          )),
-                );
-              }
-            }),
-      ]),
-    ));
-  }
-
-  Future<String> getUserFirstAndLastName(String email) async {
-    String firstName = "";
-    String lastName = "";
-    await FirebaseFirestore.instance
-        .collection('accounts')
-        .get()
-        .then((value) => value.docs.forEach((element) {
-              if (element.id == email) {
-                firstName = element['firstName'];
-                lastName = element['lastName'];
-              }
-            }));
-
-    return "$firstName $lastName";
-  }
-
-  Future<void> _fetchUserName(email) async {
-    String userName = await getUserFirstAndLastName(email);
-    setState(() {
-      _userName = userName;
-    });
-  }
-
-  void _fetchUserProfilePicture(String email) async {
-    String fileName = "${email}_profilepic.jpg";
-
-    try {
-      String url =
-          await FirebaseStorage.instance.ref().child(fileName).getDownloadURL();
-      setState(() {
-        _photoURL = url;
-      });
-    } catch (e) {
-      if (user?.photoURL != null) {
-        setState(() {
-          _photoURL = user!.photoURL!;
-        });
-      } else {
-        setState(() {
-          _photoURL = 'assets/images/empty_profile_pic.jpg';
-        });
+    for (Goal goal in uniqueGoals.values) {
+      if (getRemainedNumberOfDays(goal.deadlineTimestamp) == "0") {
+        count++;
       }
     }
+    return count;
   }
 }

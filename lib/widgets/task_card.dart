@@ -6,14 +6,15 @@ import 'package:it_fest/models/goal.dart';
 import 'package:it_fest/screens/home/_utilities.dart';
 
 class GoalCard extends StatelessWidget {
-  const GoalCard({required this.goal, super.key});
+  const GoalCard({required this.goal, required this.insets, super.key});
 
   final Goal goal;
+  final EdgeInsets? insets;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: AppInsets.right10,
+      padding: insets ?? AppInsets.right10,
       child: Container(
         width: 230,
         decoration: BoxDecoration(

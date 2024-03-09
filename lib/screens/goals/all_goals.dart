@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:it_fest/constants/insets.dart';
 import 'package:it_fest/models/goal.dart';
 import 'package:it_fest/screens/home/_utilities.dart';
 import 'package:it_fest/widgets/task_card.dart';
@@ -118,34 +119,38 @@ class _AllGoalsScreenState extends State<AllGoalsScreen> {
       appBar: AppBar(
         title: const Text('All Goals'),
       ),
-      body: FutureBuilder<List<Goal>>(
-        future: _allUserGoalsFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (snapshot.hasError) {
-            return Center(
-              child: Text('Error: ${snapshot.error}'),
-            );
-          } else if (snapshot.hasData) {
-            final goals = snapshot.data!;
-            return ListView.builder(
-                scrollDirection: Axis.vertical,
-                itemCount: goals.length,
-                itemBuilder: (context, index) => Padding(
-                      padding: const EdgeInsets.only(bottom: 10),
-                      child: GoalCard(
-                        goal: goals[index],
-                      ),
-                    ));
-          } else {
-            return const Center(
-              child: Text('No goals found'),
-            );
-          }
-        },
+      body: Padding(
+        padding: AppInsets.leftRight20,
+        child: FutureBuilder<List<Goal>>(
+          future: _allUserGoalsFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (snapshot.hasError) {
+              return Center(
+                child: Text('Error: ${snapshot.error}'),
+              );
+            } else if (snapshot.hasData) {
+              final goals = snapshot.data!;
+              return ListView.builder(
+                  scrollDirection: Axis.vertical,
+                  itemCount: goals.length,
+                  itemBuilder: (context, index) => Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: GoalCard(
+                          goal: goals[index],
+                          insets: const EdgeInsets.all(0),
+                        ),
+                      ));
+            } else {
+              return const Center(
+                child: Text('No goals found'),
+              );
+            }
+          },
+        ),
       ),
     );
   }
