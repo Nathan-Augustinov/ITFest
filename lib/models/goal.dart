@@ -4,8 +4,8 @@ class Goal {
   final String userEmail; //userEmail
   String name;
   String description;
-  TaskType goalType;
-  TaskPriority goalPriority;
+  GoalType goalType;
+  GoalPriority goalPriority;
   String deadlineTimestamp; //timestamp
   String createdTimestamp; //timestamp
 
@@ -21,8 +21,8 @@ class Goal {
   });
 }
 
-enum TaskType { daily, monthly, halfYear }
+enum GoalType { daily, monthly, halfYear }
 
-enum TaskPriority { low, medium, high }
+enum GoalPriority { low, medium, high }
 
 enum Status { pending, completed }

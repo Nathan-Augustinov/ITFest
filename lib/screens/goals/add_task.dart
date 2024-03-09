@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:it_fest/constants/app_colors.dart';
 import 'package:it_fest/models/account.dart';
 import 'package:it_fest/models/goal.dart';
-import 'package:it_fest/screens/task/_utilities.dart';
+import 'package:it_fest/screens/goals/_utilities.dart';
 import 'package:it_fest/widgets/custom_checkbox_list.dart';
 import 'package:it_fest/widgets/custom_text_field.dart';
 
@@ -26,8 +26,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
       createdTimestamp: "",
       goalId: "",
       userEmail: "",
-      goalPriority: TaskPriority.low,
-      goalType: TaskType.daily);
+      goalPriority: GoalPriority.low,
+      goalType: GoalType.daily);
   String userEmail = "";
   List<String> _friendsEmails = [];
   List<Account> _friends = [];
@@ -269,7 +269,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                           if (userEmail.isNotEmpty) {
                             setState(() {
                               //TODO: validation!!
-                              goal.goalPriority = returnTaskPriority(
+                              goal.goalPriority = returnGoalPriority(
                                   _prioritySelectedValue ?? "");
                               goal.goalType =
                                   returnTaskType(_typeSelectedValue ?? "");

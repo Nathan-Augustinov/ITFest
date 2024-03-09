@@ -1,14 +1,11 @@
 import 'dart:io';
-import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:it_fest/constants/app_texts.dart';
 import 'package:it_fest/constants/insets.dart';
-import 'package:it_fest/models/account.dart';
 import 'package:it_fest/models/goal.dart';
 import 'package:it_fest/screens/home/_utilities.dart';
 import 'package:it_fest/widgets/task_card.dart';
@@ -173,8 +170,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     //TODO: if user has image ( NetworkImage('https://picsum.photos/id/237/200/300'),) put image else
                     // AssetImage('assets/images/empty_profile_pic.jpg'),
                     _photoURL.startsWith('http')
-        ? NetworkImage(_photoURL)
-        : AssetImage(_photoURL) as ImageProvider,
+                        ? NetworkImage(_photoURL)
+                        : AssetImage(_photoURL) as ImageProvider,
               ),
             ),
             //TODO: remove hardcoded code
@@ -214,14 +211,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: snapshot.data!.length,
-                        itemBuilder: (context, index) => TaskCard(
+                        itemBuilder: (context, index) => GoalCard(
                               goal: snapshot.data![index],
                             )));
               }
             }),
         const SizedBox(height: 30),
         Text(
-          'Shared with friends tasks',
+          'Shared with friends',
           style: AppTexts.font16Bold,
         ),
         FutureBuilder<List<Goal>>(
@@ -238,7 +235,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       itemCount: snapshot.data!.length,
                       itemBuilder: (context, index) => Padding(
                             padding: const EdgeInsets.only(bottom: 10),
-                            child: TaskCard(
+                            child: GoalCard(
                               goal: snapshot.data![index],
                             ),
                           )),
@@ -276,15 +273,13 @@ class _HomeScreenState extends State<HomeScreen> {
     String fileName = "${email}_profilepic.jpg";
 
     try {
-      String url = await FirebaseStorage.instance
-          .ref()
-          .child(fileName)
-          .getDownloadURL();
+      String url =
+          await FirebaseStorage.instance.ref().child(fileName).getDownloadURL();
       setState(() {
         _photoURL = url;
       });
     } catch (e) {
-      if(user?.photoURL != null) {
+      if (user?.photoURL != null) {
         setState(() {
           _photoURL = user!.photoURL!;
         });

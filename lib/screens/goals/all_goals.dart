@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:it_fest/models/goal.dart';
 import 'package:it_fest/widgets/task_card.dart';
 
-class AllTasksScreen extends StatelessWidget {
-  const AllTasksScreen({super.key});
+class AllGoalsScreen extends StatelessWidget {
+  const AllGoalsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class AllTasksScreen extends StatelessWidget {
             itemCount: _tasks.length,
             itemBuilder: (context, index) => Padding(
                   padding: const EdgeInsets.only(bottom: 10),
-                  child: TaskCard(
+                  child: GoalCard(
                     goal: _tasks[index],
                   ),
                 )),

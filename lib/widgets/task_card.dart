@@ -5,8 +5,8 @@ import 'package:it_fest/constants/insets.dart';
 import 'package:it_fest/models/goal.dart';
 import 'package:it_fest/screens/home/_utilities.dart';
 
-class TaskCard extends StatelessWidget {
-  const TaskCard({required this.goal, super.key});
+class GoalCard extends StatelessWidget {
+  const GoalCard({required this.goal, super.key});
 
   final Goal goal;
 
