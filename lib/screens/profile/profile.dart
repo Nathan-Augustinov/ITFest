@@ -5,6 +5,7 @@ import 'package:it_fest/models/account.dart';
 import 'package:it_fest/screens/authentication/login_screen.dart';
 import 'package:it_fest/widgets/custom_dialog.dart';
 import 'package:it_fest/widgets/custom_text_field.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key, required this.account}) : super(key: key);
@@ -19,6 +20,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String imageURL = "";
   String _firstname = "";
   String _lastname = "";
+  String _emailBody = "";
+  String _emailSubject = "";
 
   //TODO: save, prefill firstname, lastname for email password users if time allows
 
@@ -33,11 +36,112 @@ class _ProfileScreenState extends State<ProfileScreen> {
               posiviteActionText: "Yes",
               positiveAction: () async {
                 await FirebaseAuth.instance.signOut();
-
-                Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (context) => const LoginScreen()),
-                    (route) => false);
+                _navigateToLogin();
               });
+        });
+  }
+
+  void _navigateToLogin() {
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => const LoginScreen()),
+        (route) => false);
+  }
+
+  void _sendEmailToAdmin(String emailBody, String emailSubject) async {
+    String email = Uri.encodeFull("alis.haiduc7773@gmail.com");
+    String subject = Uri.encodeFull(emailSubject);
+    String body = Uri.encodeFull(emailBody);
+    Uri mail = Uri.parse("mailto:$email?subject=$subject&body=$body");
+
+    if (await canLaunchUrl(mail)) {
+      await launchUrl(mail);
+    } else {
+      throw 'Could not launch $mail';
+    }
+  }
+
+  showSendEmailDialog() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(15.0))),
+            backgroundColor: AppColors.background,
+            title: Column(children: [
+              const Text(
+                "What do you want to tell us",
+                style: TextStyle(color: Colors.black),
+                textAlign: TextAlign.center,
+              ),
+              CustomTextfield(
+                maxLines: 3,
+                text: _emailBody,
+                hint: "Subject",
+                textInputType: TextInputType.text,
+                onChanged: (subject) {
+                  setState(() {
+                    _emailSubject = subject;
+                  });
+                },
+              ),
+              CustomTextfield(
+                maxLines: 20,
+                text: _emailBody,
+                hint: "Body",
+                textInputType: TextInputType.text,
+                onChanged: (body) {
+                  setState(() {
+                    _emailBody = body;
+                  });
+                },
+              ),
+            ]),
+            actions: [
+              TextButton(
+                  style: TextButton.styleFrom(
+                    textStyle: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                    shape: const BeveledRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(5))),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text(
+                    "Cancel",
+                    style: TextStyle(
+                        color: Colors.black54, fontWeight: FontWeight.normal),
+                  )),
+              TextButton(
+                style: TextButton.styleFrom(
+                  textStyle: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Montserrat',
+                  ),
+                  shape: const BeveledRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(5))),
+                ),
+                onPressed: () async {
+                  _sendEmailToAdmin(_emailBody, _emailSubject);
+                },
+                child: Container(
+                  width: 60,
+                  padding: const EdgeInsets.all(8.0),
+                  decoration: const BoxDecoration(
+                    color: AppColors.lightOrange,
+                    borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                  ),
+                  child: const Text(
+                    "Send",
+                    style: TextStyle(color: AppColors.background),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              )
+            ],
+          );
         });
   }
 
@@ -128,7 +232,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         fontSize: 18),
                     textAlign: TextAlign.center,
                   ),
-                  onPressed: () {},
+                  onPressed: () => showSendEmailDialog(),
                 ),
               ),
             ),
