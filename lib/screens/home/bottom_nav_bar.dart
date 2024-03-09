@@ -6,8 +6,8 @@ import 'package:it_fest/models/account.dart';
 import 'package:it_fest/screens/friends/add_friends.dart';
 import 'package:it_fest/screens/home/home_screen.dart';
 import 'package:it_fest/screens/profile/profile.dart';
-import 'package:it_fest/screens/task/add_task.dart';
-import 'package:it_fest/screens/task/all_tasks.dart';
+import 'package:it_fest/screens/goals/add_goal.dart';
+import 'package:it_fest/screens/goals/all_goals.dart';
 
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({Key? key}) : super(key: key);
@@ -47,7 +47,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
 
   final List screens = [
     const HomeScreen(),
-    const AddTaskScreen(),
+    const AddGoalScreen(),
     const ProfileScreen(
       account: null,
     )
@@ -66,7 +66,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const AddTaskScreen()));
+              MaterialPageRoute(builder: (context) => const AddGoalScreen()));
         },
         hoverElevation: 2,
         backgroundColor: AppColors.floatingNavBar,
@@ -112,7 +112,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                         onPressed: () {
                           //TODO: send data accordingly
                           setState(() {
-                            currentScreen = AllTasksScreen();
+                            currentScreen = AllGoalsScreen();
                             currentTabIndex = 2;
                           });
                         },

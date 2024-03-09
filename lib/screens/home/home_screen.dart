@@ -175,14 +175,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: snapshot.data!.length,
-                        itemBuilder: (context, index) => TaskCard(
+                        itemBuilder: (context, index) => GoalCard(
                               goal: snapshot.data![index],
                             )));
               }
             }),
         const SizedBox(height: 30),
         Text(
-          'Shared with friends tasks',
+          'Shared with friends',
           style: AppTexts.font16Bold,
         ),
         Expanded(
@@ -191,7 +191,7 @@ class _HomeScreenState extends State<HomeScreen> {
               itemCount: _tasks.length,
               itemBuilder: (context, index) => Padding(
                     padding: const EdgeInsets.only(bottom: 10),
-                    child: TaskCard(
+                    child: GoalCard(
                       goal: _tasks[index],
                     ),
                   )),

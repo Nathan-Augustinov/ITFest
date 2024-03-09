@@ -10,50 +10,50 @@ String getRemainedNumberOfDays(String deadlineTimestamp) {
   return difference.toString();
 }
 
-TaskPriority getPriority(String priority) {
+GoalPriority getPriority(String priority) {
   switch (priority) {
     case "low":
-      return TaskPriority.low;
+      return GoalPriority.low;
     case "medium":
-      return TaskPriority.medium;
+      return GoalPriority.medium;
     case "high":
-      return TaskPriority.high;
+      return GoalPriority.high;
     default:
-      return TaskPriority.low;
+      return GoalPriority.low;
   }
 }
 
-TaskType getType(String type) {
+GoalType getType(String type) {
   switch (type) {
     case "daily":
-      return TaskType.daily;
+      return GoalType.daily;
     case "monthly":
-      return TaskType.monthly;
+      return GoalType.monthly;
     case "halfYear":
-      return TaskType.halfYear;
+      return GoalType.halfYear;
     default:
-      return TaskType.daily;
+      return GoalType.daily;
   }
 }
 
-Color getColorByPriority(TaskPriority priority) {
+Color getColorByPriority(GoalPriority priority) {
   switch (priority) {
-    case TaskPriority.low:
+    case GoalPriority.low:
       return AppColors.lightGreen;
-    case TaskPriority.medium:
+    case GoalPriority.medium:
       return AppColors.lightPurple;
-    case TaskPriority.high:
+    case GoalPriority.high:
       return AppColors.lightOrange;
   }
 }
 
-Color getColorByType(TaskType type) {
+Color getColorByType(GoalType type) {
   switch (type) {
-    case TaskType.daily:
+    case GoalType.daily:
       return AppColors.green;
-    case TaskType.monthly:
+    case GoalType.monthly:
       return AppColors.purple;
-    case TaskType.halfYear:
+    case GoalType.halfYear:
       return AppColors.orange;
   }
 }

@@ -38,13 +38,13 @@ bool checkIfOwmer(String ownerEmail, String email) {
   return ownerEmail == email;
 }
 
-String returnDeadlineTimestamp(TaskType type) {
+String returnDeadlineTimestamp(GoalType type) {
   switch (type) {
-    case TaskType.daily:
+    case GoalType.daily:
       return getDeadlineMillisecondsTimestamp(1);
-    case TaskType.monthly:
+    case GoalType.monthly:
       return getDeadlineMillisecondsTimestamp(30);
-    case TaskType.halfYear:
+    case GoalType.halfYear:
       return getDeadlineMillisecondsTimestamp(181);
   }
 }
@@ -65,28 +65,28 @@ String getDeadlineMillisecondsTimestamp(int days) {
 }
 
 //TODO: refactor
-TaskPriority returnTaskPriority(String priority) {
+GoalPriority returnGoalPriority(String priority) {
   switch (priority) {
     case "Low":
-      return TaskPriority.low;
+      return GoalPriority.low;
     case "High":
-      return TaskPriority.high;
+      return GoalPriority.high;
     case "Medium":
-      return TaskPriority.medium;
+      return GoalPriority.medium;
     default:
-      return TaskPriority.low;
+      return GoalPriority.low;
   }
 }
 
-TaskType returnTaskType(String type) {
+GoalType returnTaskType(String type) {
   switch (type) {
     case "Daily":
-      return TaskType.daily;
+      return GoalType.daily;
     case "A month":
-      return TaskType.monthly;
+      return GoalType.monthly;
     case "Half a year":
-      return TaskType.halfYear;
+      return GoalType.halfYear;
     default:
-      return TaskType.daily;
+      return GoalType.daily;
   }
 }
