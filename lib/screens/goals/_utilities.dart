@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:it_fest/models/goal.dart';
 
+const List<String> typeItems = ["Daily", "A month", "Half a year"];
+const List<String> priorityItems = ["Low", "High", "Medium"];
+
 void addPersonalGoalToForebase(
     Goal goal, String userEmail, List<String> checkedFriends) async {
   CollectionReference goalsCollection =
@@ -23,6 +26,7 @@ void addPersonalGoalToForebase(
     'email': userEmail,
     'owner': true,
     'completed': false,
+    'completedTimestamp': ''
   });
 
   checkedFriends.forEach((element) async {
@@ -30,6 +34,7 @@ void addPersonalGoalToForebase(
       'email': element,
       'owner': checkIfOwmer(userEmail, element),
       'completed': false,
+      'completedTimestamp': ''
     });
   });
 }
@@ -49,6 +54,11 @@ String returnDeadlineTimestamp(GoalType type) {
   }
 }
 
+DateTime getDateTimeFromTimestamp(String timestamp) {
+  DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(int.parse(timestamp));
+  return dateTime;
+}
+
 String getCreatedTimeMillisecondsTimestamp() {
   DateTime today = DateTime.now();
   int timestamp = today.millisecondsSinceEpoch;
@@ -62,6 +72,18 @@ String getDeadlineMillisecondsTimestamp(int days) {
   int timestamp = deadline.millisecondsSinceEpoch;
 
   return timestamp.toString();
+}
+
+Goal initializeGoal() {
+  return Goal(
+      name: "",
+      description: "",
+      deadlineTimestamp: "",
+      createdTimestamp: "",
+      goalId: "",
+      userEmail: "",
+      goalPriority: GoalPriority.low,
+      goalType: GoalType.daily);
 }
 
 //TODO: refactor
