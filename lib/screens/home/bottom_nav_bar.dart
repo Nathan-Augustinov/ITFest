@@ -34,15 +34,14 @@ class _BottomNavBarState extends State<BottomNavBar> {
         .collection('accounts')
         .doc(currentUser.email)
         .get();
-    setState(() { 
+    setState(() {
       account = Account(
-                  uid: currentUser.uid, 
-                  firstName: currentUserDoc.data()?['firstName'], 
-                  lastName: currentUserDoc.data()?['lastName'], 
-                  email: currentUserDoc.data()?['email'], 
-                  photoURL: currentUserDoc.data()?['photoURL'], 
-                  friendsIds: List<String>.from(currentUserDoc.data()?['friends'] ?? []) ,
-                );
+        uid: currentUser.uid,
+        firstName: currentUserDoc.data()?['firstName'],
+        lastName: currentUserDoc.data()?['lastName'],
+        email: currentUserDoc.data()?['email'],
+        photoURL: currentUserDoc.data()?['photoURL'],
+      );
     });
   }
 

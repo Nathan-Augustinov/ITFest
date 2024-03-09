@@ -4,13 +4,12 @@ class Account {
   final String lastName;
   final String email;
   String photoURL;
-  List<String> friendsIds = [];
 
-  Account(
-      {required this.uid,
-      required this.firstName,
-      required this.lastName,
-      required this.email,
-      required this.photoURL,
-      required this.friendsIds});
+  Account({
+    required this.uid,
+    required this.firstName,
+    required this.lastName,
+    required this.email,
+    required this.photoURL,
+  });
 }

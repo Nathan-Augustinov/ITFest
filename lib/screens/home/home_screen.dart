@@ -22,9 +22,11 @@ class _HomeScreenState extends State<HomeScreen> {
   late User? user;
   late Account _account;
   String _userName = '';
-
+  //TODO?
+  List<Goal> _tasks = [];
   List<Goal> userGoals = [];
 
+//TODO: urmatoarea saptamana taskuri
   @override
   initState() {
     super.initState();

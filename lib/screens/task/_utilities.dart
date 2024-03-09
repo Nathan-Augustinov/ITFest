@@ -1,8 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:it_fest/models/goal.dart';
 
-void addPersonalGoalToForebase(Goal goal, String userEmail) {
-  FirebaseFirestore.instance.collection('goals').doc().set({
+void addPersonalGoalToForebase(
+    Goal goal, String userEmail, List<String> checkedFriends) async {
+  CollectionReference goalsCollection =
+      FirebaseFirestore.instance.collection('goals');
+
+  DocumentReference goalDocument = await goalsCollection.add({
     'title': goal.name,
     'description': goal.description,
     'priority': goal.goalPriority.name,
@@ -10,8 +14,28 @@ void addPersonalGoalToForebase(Goal goal, String userEmail) {
     'userEmail': userEmail,
     'deadline': returnDeadlineTimestamp(goal.goalType),
     'createdTime': getCreatedTimeMillisecondsTimestamp(),
-    'friends': [],
   });
+
+  CollectionReference usersCollection = goalDocument.collection('users');
+
+//TODO: refactor
+  await usersCollection.add({
+    'email': userEmail,
+    'owner': true,
+    'completed': false,
+  });
+
+  checkedFriends.forEach((element) async {
+    await usersCollection.add({
+      'email': element,
+      'owner': checkIfOwmer(userEmail, element),
+      'completed': false,
+    });
+  });
+}
+
+bool checkIfOwmer(String ownerEmail, String email) {
+  return ownerEmail == email;
 }
 
 String returnDeadlineTimestamp(TaskType type) {
