@@ -21,9 +21,11 @@ class _HomeScreenState extends State<HomeScreen> {
   late User? user;
   late Account _account;
   String _userName = '';
-
+  //TODO?
+  List<Goal> _tasks = [];
   List<Goal> userGoals = [];
 
+//TODO: urmatoarea saptamana taskuri
   @override
   initState() {
     super.initState();
@@ -159,7 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 )),
           ],
         ),
- FutureBuilder<List<Goal>>(
+        FutureBuilder<List<Goal>>(
             future: getGoalsForUser(user?.email ?? ""),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -178,7 +180,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             )));
               }
             }),
-            const SizedBox(height: 30),
+        const SizedBox(height: 30),
         Text(
           'Shared with friends tasks',
           style: AppTexts.font16Bold,
@@ -195,7 +197,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   )),
         ),
       ]),
-    ));        
+    ));
   }
 
   Future<String> getUserFirstAndLastName(String email) async {

@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:it_fest/constants/app_texts.dart';
-import 'package:it_fest/widgets/custom_text_field.dart';
 
 class AddFriendsPage extends StatefulWidget {
   @override
@@ -24,6 +23,7 @@ class _AddFriendsPageState extends State<AddFriendsPage> {
     getUserFriends();
   }
 
+//TODO: sa nu uitam sa adaugam relatie prietenie si invers
   Future<void> getUserFriends() async {
     final currentUserDoc = await FirebaseFirestore.instance
         .collection('accounts')
@@ -32,11 +32,9 @@ class _AddFriendsPageState extends State<AddFriendsPage> {
     print(currentUserEmail);
     print(currentUserDoc.data());
     final friendsArray = currentUserDoc.data()?['friends'] as List<dynamic>;
-    if (friendsArray != null) {
-      setState(() {
-        friends = friendsArray.cast<String>();
-      });
-    }
+    setState(() {
+      friends = friendsArray.cast<String>();
+    });
   }
 
   Future<bool> existsSearchedUser(email) async {
@@ -49,14 +47,6 @@ class _AddFriendsPageState extends State<AddFriendsPage> {
     }
     return false;
   }
-
-  // Future<void> searchUser() async {
-  //   final bool userExists = await existsSearchedUser(searchEmail);
-  //   setState(() {
-  //     isUserFound = userExists;
-  //     foundUserEmail = userExists ? searchEmail : null;
-  //   });
-  // }
 
   Future<void> searchUser() async {
     if (searchEmail == currentUserEmail) {
