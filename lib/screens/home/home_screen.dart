@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -20,8 +21,9 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late User? user;
-  late Account _account;
+  // late Account _account;
   String _userName = '';
+  String _photoURL = '';
   //TODO?
   List<Goal> _tasks = [];
   List<Goal> userGoals = [];
@@ -34,6 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
       user = FirebaseAuth.instance.currentUser;
     });
     _fetchUserName(user?.email ?? "");
+    _fetchUserProfilePicture(user?.email ?? "");
   }
 
 //TODO: show latest goals
@@ -130,7 +133,8 @@ class _HomeScreenState extends State<HomeScreen> {
     ref.getDownloadURL().then((value) {
       if (mounted) {
         setState(() {
-          _account.photoURL = value;
+          // _account.photoURL = value;
+          _photoURL = value;
         });
       }
     });
@@ -143,7 +147,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     .collection('accounts')
                     .doc(element.id);
                 if (element['photoURL'] != "") {
-                  docRef.update({'photoURL': _account.photoURL});
+                  // docRef.update({'photoURL': _account.photoURL});
+                  docRef.update({'photoURL': _photoURL});
                 }
               }
             }));
@@ -162,11 +167,14 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             GestureDetector(
               onTap: () => uploadProfilePicture(),
-              child: const CircleAvatar(
+              child: CircleAvatar(
                 radius: 35,
                 backgroundImage:
                     //TODO: if user has image ( NetworkImage('https://picsum.photos/id/237/200/300'),) put image else
-                    AssetImage('assets/images/empty_profile_pic.jpg'),
+                    // AssetImage('assets/images/empty_profile_pic.jpg'),
+                    _photoURL.startsWith('http')
+        ? NetworkImage(_photoURL)
+        : AssetImage(_photoURL) as ImageProvider,
               ),
             ),
             //TODO: remove hardcoded code
@@ -262,5 +270,29 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _userName = userName;
     });
+  }
+
+  void _fetchUserProfilePicture(String email) async {
+    String fileName = "${email}_profilepic.jpg";
+
+    try {
+      String url = await FirebaseStorage.instance
+          .ref()
+          .child(fileName)
+          .getDownloadURL();
+      setState(() {
+        _photoURL = url;
+      });
+    } catch (e) {
+      if(user?.photoURL != null) {
+        setState(() {
+          _photoURL = user!.photoURL!;
+        });
+      } else {
+        setState(() {
+          _photoURL = 'assets/images/empty_profile_pic.jpg';
+        });
+      }
+    }
   }
 }
