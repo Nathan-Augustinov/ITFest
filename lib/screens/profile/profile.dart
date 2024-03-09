@@ -42,6 +42,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: AppColors.navBar,
       appBar: AppBar(
         backgroundColor: AppColors.background,
