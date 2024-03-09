@@ -20,7 +20,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String _firstname = "";
   String _lastname = "";
 
-  //TODO: save, prefill firstname, lastname
+  //TODO: save, prefill firstname, lastname for email password users if time allows
 
   showLogOutDialog() {
     showDialog(

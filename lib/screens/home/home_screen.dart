@@ -99,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
         body: Container(
       padding: AppInsets.leftRight20.copyWith(top: 50),
-      height: MediaQuery.of(context).size.height * 0.7,
+      // height: MediaQuery.of(context).size.height * 0.7,
       child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,21 +124,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       _userName.isEmpty ? 'Loading...' : _userName,
                       style: AppTexts.font16Bold,
                     ),
-                    // FutureBuilder<String>(
-                    //     future: getUserFirstAndLastName(user?.email ?? ""),
-                    //     builder: (context, snapshot) {
-                    //       if (snapshot.hasData) {
-                    //         return Text(
-                    //           snapshot.data!,
-                    //           style: AppTexts.font16Bold,
-                    //         );
-                    //       } else {
-                    //         return Text(
-                    //           "Loading...",
-                    //           style: AppTexts.font16Bold,
-                    //         );
-                    //       }
-                    //     }),
                     //TODO: if has tasks change text
                     Padding(
                       padding: AppInsets.top10,
@@ -159,7 +144,23 @@ class _HomeScreenState extends State<HomeScreen> {
                 itemCount: _tasks.length,
                 itemBuilder: (context, index) => TaskCard(
                       goal: _tasks[index],
-                    )))
+                    ))),
+        const SizedBox(height: 30),
+        Text(
+          'Shared with friends tasks',
+          style: AppTexts.font16Bold,
+        ),
+        Expanded(
+          child: ListView.builder(
+              scrollDirection: Axis.vertical,
+              itemCount: _tasks.length,
+              itemBuilder: (context, index) => Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: TaskCard(
+                      goal: _tasks[index],
+                    ),
+                  )),
+        ),
       ]),
     ));
   }
