@@ -1,3 +1,4 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:it_fest/constants/app_colors.dart';
@@ -109,7 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   color: AppColors.green,
                                 )),
                           ),
-                          obscureText: true,
+                          obscureText: _obscureText,
                           validator: (value) {
                             if (value!.isEmpty) {
                               return 'Please enter a password';
@@ -143,13 +144,25 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                 ),
                                 onPressed: () {
+                                  bool emailIsValid = EmailValidator.validate(_emailController.text);
+                                  
                                   if (_formKey.currentState!.validate()) {
-                                    loginUserWithEmailAndPassword(
-                                        _emailController.text, _passwordController.text);
-                                    Navigator.pushReplacement(context,
-                                        MaterialPageRoute(builder: (context) => StartPage()));
+                                    if(emailIsValid == false){
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                            'Please enter a valid email'),
+                                      ),
+                                    );
+                                  } else {
+                                      loginUserWithEmailAndPassword(
+                                          _emailController.text, _passwordController.text);
+                                      Navigator.pushReplacement(context,
+                                          MaterialPageRoute(builder: (context) => StartPage()));
                                   }
-                                },
+                                  }
+                                }
+                                  
                               ),
 
                             ),
