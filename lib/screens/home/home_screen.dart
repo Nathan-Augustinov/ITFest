@@ -23,32 +23,32 @@ class _HomeScreenState extends State<HomeScreen> {
   String _userName = '';
   final List<Goal> _tasks = [
     Goal(
-        taskId: "0",
+        goalId: "0",
         userId: "0",
         name: "Task1",
         description: "task task 1",
-        taskType: TaskType.daily,
-        taskPriority: TaskPriority.low,
-        deadline: "1710198631000", //11.03.2024
-        creationDate: "1709334631000"), //01.03.2024
+        goalType: TaskType.daily,
+        goalPriority: TaskPriority.low,
+        deadlineTimestamp: "1710198631000", //11.03.2024
+        createdTimestamp: "1709334631000"), //01.03.2024
     Goal(
-        taskId: "0",
+        goalId: "0",
         userId: "0",
         name: "Task1",
         description: "task task 1",
-        taskType: TaskType.monthly,
-        taskPriority: TaskPriority.medium,
-        deadline: "1710198631000", //11.03.2024
-        creationDate: "1709334631000"), //01.03.2024
+        goalType: TaskType.monthly,
+        goalPriority: TaskPriority.medium,
+        deadlineTimestamp: "1710198631000", //11.03.2024
+        createdTimestamp: "1709334631000"), //01.03.2024
     Goal(
-        taskId: "0",
+        goalId: "0",
         userId: "0",
         name: "Task1",
         description: "task task 1",
-        taskType: TaskType.halfYear,
-        taskPriority: TaskPriority.high,
-        deadline: "1710198631000", //11.03.2024
-        creationDate: "1709334631000") //01.03.2024
+        goalType: TaskType.halfYear,
+        goalPriority: TaskPriority.high,
+        deadlineTimestamp: "1710198631000", //11.03.2024
+        createdTimestamp: "1709334631000") //01.03.2024
   ];
 
   @override
@@ -166,21 +166,21 @@ class _HomeScreenState extends State<HomeScreen> {
         ));
   }
 
-Future<String> getUserFirstAndLastName(String email) async {
-  String firstName = "";
-  String lastName = "";
-  await FirebaseFirestore.instance
-      .collection('accounts')
-      .get()
-      .then((value) => value.docs.forEach((element) {
-            if (element.id == email) {
-              firstName = element['firstName'];
-              lastName = element['lastName'];
-            }
-          }));
+  Future<String> getUserFirstAndLastName(String email) async {
+    String firstName = "";
+    String lastName = "";
+    await FirebaseFirestore.instance
+        .collection('accounts')
+        .get()
+        .then((value) => value.docs.forEach((element) {
+              if (element.id == email) {
+                firstName = element['firstName'];
+                lastName = element['lastName'];
+              }
+            }));
 
-  return "$firstName $lastName";
-}
+    return "$firstName $lastName";
+  }
 
   Future<void> _fetchUserName(email) async {
     String userName = await getUserFirstAndLastName(email);
@@ -189,4 +189,3 @@ Future<String> getUserFirstAndLastName(String email) async {
     });
   }
 }
-
