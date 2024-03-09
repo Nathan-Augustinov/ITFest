@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:it_fest/constants/app_colors.dart';
+import 'package:it_fest/models/account.dart';
 import 'package:it_fest/screens/friends/add_friends.dart';
 import 'package:it_fest/screens/home/home_screen.dart';
 import 'package:it_fest/screens/profile/profile.dart';
@@ -15,6 +18,32 @@ class BottomNavBar extends StatefulWidget {
 class _BottomNavBarState extends State<BottomNavBar> {
   int currentTabIndex = 0;
   double iconSize = 24;
+  late Account account;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchCurrentUserAccount();
+  }
+
+  void fetchCurrentUserAccount() async {
+    final currentUser = FirebaseAuth.instance.currentUser!;
+    final currentUserDoc = await FirebaseFirestore.instance
+        .collection('accounts')
+        .doc(currentUser?.email)
+        .get();
+    setState(() { 
+      account = Account(
+                  uid: currentUser.uid, 
+                  firstName: currentUserDoc.data()?['firstName'], 
+                  lastName: currentUserDoc.data()?['lastName'], 
+                  email: currentUserDoc.data()?['email'], 
+                  photoURL: currentUserDoc.data()?['photoURL'], 
+                  friendsIds: List<String>.from(currentUserDoc.data()?['friends'] ?? []),
+                );
+    });
+  }
 
   final List screens = [
     const HomeScreen(),
@@ -125,17 +154,14 @@ class _BottomNavBarState extends State<BottomNavBar> {
                         onPressed: () {
                           //TODO: send data accordingly
                           setState(() {
-                            currentScreen = const ProfileScreen(
-                              account: null,
+                            currentScreen = ProfileScreen(
+                              account: account,
                             );
                             currentTabIndex = 2;
                           });
                         },
-                        child: const Icon(
-                          Icons.person,
-                          color: Colors.white,
-                          size: 10
-                        ),
+                        child: const Icon(Icons.person,
+                            color: Colors.white, size: 10),
                       ),
                     ],
                   ),
