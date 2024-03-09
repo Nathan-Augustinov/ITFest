@@ -24,7 +24,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     deadlineTimestamp: "",
     createdTimestamp: "",
     goalId: "",
-    userId: "",
+    userEmail: "",
     goalPriority: TaskPriority.low,
     goalType: TaskType.daily,
   );
@@ -85,6 +85,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
         });
   }
 
+  //TODO: clear fields after save
   @override
   Widget build(BuildContext context) {
     return Scaffold(
