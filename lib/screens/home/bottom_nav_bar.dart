@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:it_fest/constants/app_colors.dart';
+import 'package:it_fest/screens/friends/add_friends.dart';
 import 'package:it_fest/screens/home/home_screen.dart';
 import 'package:it_fest/screens/profile/profile.dart';
 import 'package:it_fest/screens/task/add_task.dart';
@@ -13,6 +14,7 @@ class BottomNavBar extends StatefulWidget {
 
 class _BottomNavBarState extends State<BottomNavBar> {
   int currentTabIndex = 0;
+  double iconSize = 24;
 
   final List screens = [
     const HomeScreen(),
@@ -54,41 +56,89 @@ class _BottomNavBarState extends State<BottomNavBar> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    MaterialButton(
-                      onPressed: () {
-                        setState(() {
-                          currentScreen = const HomeScreen();
-                          currentTabIndex = 0;
-                        });
-                      },
-                      child: const Icon(
-                        Icons.home_outlined,
-                        color: Colors.white,
+                Flexible(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      MaterialButton(
+                        onPressed: () {
+                          setState(() {
+                            currentScreen = const HomeScreen();
+                            currentTabIndex = 0;
+                          });
+                        },
+                        child: const Icon(
+                          Icons.home_outlined,
+                          color: Colors.white,
+                          size: 20,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-                Row(
-                  children: [
-                    MaterialButton(
-                      onPressed: () {
-                        //TODO: send data accordingly
-                        setState(() {
-                          currentScreen = const ProfileScreen(
-                            account: null,
-                          );
-                          currentTabIndex = 2;
-                        });
-                      },
-                      child: const Icon(
-                        Icons.person,
-                        color: Colors.white,
+                Flexible(
+                  child: Row(
+                    children: [
+                      MaterialButton(
+                        onPressed: () {
+                          //TODO: send data accordingly
+                          setState(() {
+                            currentScreen = const ProfileScreen(
+                              account: null,
+                            );
+                            currentTabIndex = 2;
+                          });
+                        },
+                        child: const Icon(
+                          Icons.person,
+                          color: Colors.white,
+                          size: 20,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
+                ),
+                Flexible(
+                  child: Row(
+                    children: [
+                      MaterialButton(
+                        onPressed: () {
+                          //TODO: send data accordingly
+                          setState(() {
+                            currentScreen = AddFriendsPage();
+                            currentTabIndex = 3;
+                          });
+                        },
+                        child: const Icon(
+                          Icons.person,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Flexible(
+                  child: Row(
+                    children: [
+                      MaterialButton(
+                        onPressed: () {
+                          //TODO: send data accordingly
+                          setState(() {
+                            currentScreen = const ProfileScreen(
+                              account: null,
+                            );
+                            currentTabIndex = 2;
+                          });
+                        },
+                        child: const Icon(
+                          Icons.person,
+                          color: Colors.white,
+                          size: 10
+                        ),
+                      ),
+                    ],
+                  ),
                 )
               ]),
         ),
