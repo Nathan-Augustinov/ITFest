@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:it_fest/screens/authentication/_utilities.dart';
 import 'package:it_fest/constants/app_colors.dart';
 import 'package:it_fest/screens/authentication/register_screen.dart';
+import 'package:it_fest/screens/home/bottom_nav_bar.dart';
 import 'package:it_fest/screens/start_page.dart';
 import '../../services/google_authentication.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -158,7 +159,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => StartPage()));
+                                          builder: (context) => const BottomNavBar()));
                                 }
                               }
                             }),
@@ -216,7 +217,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => StartPage()));
+                                      builder: (context) => const BottomNavBar()));
                             }
                           },
                         ),
@@ -299,7 +300,7 @@ class _LoginScreenState extends State<LoginScreen> {
       print('User logged in: ${user.email}');
 
       // Save user email in sharedPreferences
-      AuthUtilities().saveUserEmail(user.email ?? "");
+      // AuthUtilities().saveUserEmail(user.email ?? "");
     } catch (e) {
       // Error occurred while logging in
       print('Error logging in: $e');

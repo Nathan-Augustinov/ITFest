@@ -18,7 +18,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  late User? user;
   late Account _account;
+  String _userName = '';
   final List<Goal> _tasks = [
     Goal(
         taskId: "0",
@@ -52,6 +54,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   initState() {
     super.initState();
+    user = FirebaseAuth.instance.currentUser;
+    _fetchUserName(user?.email ?? "");
   }
 
   void uploadProfilePicture() async {
@@ -61,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
         maxWidth: 512,
         imageQuality: 75);
 
-    String userEmail = FirebaseAuth.instance.currentUser?.email ?? "";
+    String userEmail = user?.email ?? "";
     print("userEmail : $userEmail");
     Reference ref =
         FirebaseStorage.instance.ref().child("${userEmail}_profilepic.jpg");
@@ -117,10 +121,26 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        //TODO: if user has name show name else show loading
                         Text(
-                          "User name",
+                          _userName.isEmpty ? 'Loading...' : _userName,
                           style: AppTexts.font16Bold,
                         ),
+                        // FutureBuilder<String>(
+                        //     future: getUserFirstAndLastName(user?.email ?? ""),
+                        //     builder: (context, snapshot) {
+                        //       if (snapshot.hasData) {
+                        //         return Text(
+                        //           snapshot.data!,
+                        //           style: AppTexts.font16Bold,
+                        //         );
+                        //       } else {
+                        //         return Text(
+                        //           "Loading...",
+                        //           style: AppTexts.font16Bold,
+                        //         );
+                        //       }
+                        //     }),
                         //TODO: if has tasks change text
                         Padding(
                           padding: AppInsets.top10,
@@ -145,4 +165,28 @@ class _HomeScreenState extends State<HomeScreen> {
           ]),
         ));
   }
+
+Future<String> getUserFirstAndLastName(String email) async {
+  String firstName = "";
+  String lastName = "";
+  await FirebaseFirestore.instance
+      .collection('accounts')
+      .get()
+      .then((value) => value.docs.forEach((element) {
+            if (element.id == email) {
+              firstName = element['firstName'];
+              lastName = element['lastName'];
+            }
+          }));
+
+  return "$firstName $lastName";
 }
+
+  Future<void> _fetchUserName(email) async {
+    String userName = await getUserFirstAndLastName(email);
+    setState(() {
+      _userName = userName;
+    });
+  }
+}
+

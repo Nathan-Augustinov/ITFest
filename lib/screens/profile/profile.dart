@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:it_fest/constants/app_colors.dart';
 import 'package:it_fest/models/account.dart';
@@ -30,10 +31,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
               description: "Are you sure?",
               negativeActionText: "Cancel",
               posiviteActionText: "Yes",
-              positiveAction: () {
-                //TODO: add sign out action
+              positiveAction: () async {
+                await FirebaseAuth.instance.signOut();
+
                 Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (context) => LoginScreen()),
+                    MaterialPageRoute(builder: (context) => const LoginScreen()),
                     (route) => false);
               });
         });

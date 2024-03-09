@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:it_fest/constants/app_colors.dart';
 import 'package:it_fest/firebase_options.dart';
+import 'package:it_fest/screens/authentication/login_screen.dart';
 import 'package:it_fest/screens/home/bottom_nav_bar.dart';
 
 void main() async {
@@ -15,6 +17,7 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -25,7 +28,19 @@ class MyApp extends StatelessWidget {
             surfaceTintColor: AppColors.navBar,
             shadowColor: AppColors.navBar),
       ),
-      home: const BottomNavBar(),
+      home: StreamBuilder(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          } else if (snapshot.hasData) {
+            return const BottomNavBar(); // User is signed in
+          } else {
+            return const LoginScreen(); // User is not signed in
+          }
+        },
+      )
+      // home: const BottomNavBar(),
     );
   }
 }
