@@ -7,15 +7,15 @@ class StartPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Start Page'),
+        title: const Text('Start Page'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
+            Text(
               'Welcome to the Start Page!',
-              style: TextStyle(fontSize: 24),
+              style: const TextStyle(fontSize: 24),
             ),
             SizedBox(height: 16),
             ElevatedButton(

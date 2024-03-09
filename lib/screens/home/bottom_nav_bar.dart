@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:it_fest/constants/app_colors.dart';
+import 'package:it_fest/screens/authentication/login_screen.dart';
 import 'package:it_fest/screens/home/home_screen.dart';
 import 'package:it_fest/screens/profile/profile.dart';
 import 'package:it_fest/screens/task/add_task.dart';
@@ -34,7 +35,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const AddTaskScreen()));
+              MaterialPageRoute(builder: (context) => const LoginScreen()));
         },
         hoverElevation: 2,
         backgroundColor: AppColors.floatingNavBar,
