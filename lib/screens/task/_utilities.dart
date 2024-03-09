@@ -5,8 +5,8 @@ void addPersonalGoalToForebase(Goal goal, String userEmail) {
   FirebaseFirestore.instance.collection('goals').doc().set({
     'title': goal.name,
     'description': goal.description,
-    'priority': goal.goalPriority.toString(),
-    'type': goal.goalType.toString(),
+    'priority': goal.goalPriority.name,
+    'type': goal.goalType.name,
     'userEmail': userEmail,
     'deadline': returnDeadlineTimestamp(goal.goalType),
     'createdTime': getCreatedTimeMillisecondsTimestamp(),

@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -9,6 +8,7 @@ import 'package:it_fest/constants/app_texts.dart';
 import 'package:it_fest/constants/insets.dart';
 import 'package:it_fest/models/account.dart';
 import 'package:it_fest/models/goal.dart';
+import 'package:it_fest/screens/home/_utilities.dart';
 import 'package:it_fest/widgets/task_card.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -21,41 +21,64 @@ class _HomeScreenState extends State<HomeScreen> {
   late User? user;
   late Account _account;
   String _userName = '';
-  final List<Goal> _tasks = [
-    Goal(
-        goalId: "0",
-        userId: "0",
-        name: "Task1",
-        description: "task task 1",
-        goalType: TaskType.daily,
-        goalPriority: TaskPriority.low,
-        deadlineTimestamp: "1710198631000", //11.03.2024
-        createdTimestamp: "1709334631000"), //01.03.2024
-    Goal(
-        goalId: "0",
-        userId: "0",
-        name: "Task1",
-        description: "task task 1",
-        goalType: TaskType.monthly,
-        goalPriority: TaskPriority.medium,
-        deadlineTimestamp: "1710198631000", //11.03.2024
-        createdTimestamp: "1709334631000"), //01.03.2024
-    Goal(
-        goalId: "0",
-        userId: "0",
-        name: "Task1",
-        description: "task task 1",
-        goalType: TaskType.halfYear,
-        goalPriority: TaskPriority.high,
-        deadlineTimestamp: "1710198631000", //11.03.2024
-        createdTimestamp: "1709334631000") //01.03.2024
-  ];
+
+  List<Goal> userGoals = [];
 
   @override
   initState() {
     super.initState();
-    user = FirebaseAuth.instance.currentUser;
+    setState(() {
+      user = FirebaseAuth.instance.currentUser;
+    });
     _fetchUserName(user?.email ?? "");
+  }
+
+  @override
+  didChangeDependencies() async {
+    super.didChangeDependencies();
+    userGoals = await getGoalsForUser(user?.email ?? "");
+  }
+
+//TODO: show latest goals
+
+  Future<List<Goal>> getGoalsForUser(String userEmail) async {
+    List<Goal> userGoals = [];
+
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('goals')
+          .where('userEmail', isEqualTo: userEmail)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        for (DocumentSnapshot doc in querySnapshot.docs) {
+          String goalId = doc.id;
+          String name = doc['title'];
+          String description = doc['description'];
+          String userEmail = doc['userEmail'];
+          String createdTimestamp = doc['createdTime'];
+          String deadlineTimestamp = doc['deadline'];
+          String type = doc['type'];
+          String priority = doc['priority'];
+
+          Goal goal = Goal(
+              goalId: goalId,
+              name: name,
+              description: description,
+              userEmail: userEmail,
+              createdTimestamp: createdTimestamp,
+              deadlineTimestamp: deadlineTimestamp,
+              goalType: getType(type),
+              goalPriority: getPriority(priority));
+          userGoals.add(goal);
+        }
+      }
+    } catch (e) {
+      print('Error getting goals: $e');
+      // Return an empty list or handle the error as per your application's requirement.
+    }
+
+    return userGoals;
   }
 
   //TODO: not working properly
@@ -136,15 +159,25 @@ class _HomeScreenState extends State<HomeScreen> {
                 )),
           ],
         ),
-        Container(
-            height: 170,
-            padding: AppInsets.top20,
-            child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: _tasks.length,
-                itemBuilder: (context, index) => TaskCard(
-                      goal: _tasks[index],
-                    )))
+        FutureBuilder<List<Goal>>(
+            future: getGoalsForUser(user?.email ?? ""),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              } else {
+                return Container(
+                    height: 170,
+                    padding: AppInsets.top20,
+                    child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: snapshot.data!.length,
+                        itemBuilder: (context, index) => TaskCard(
+                              goal: snapshot.data![index],
+                            )));
+              }
+            })
       ]),
     ));
   }

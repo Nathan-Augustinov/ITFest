@@ -24,7 +24,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     deadlineTimestamp: "",
     createdTimestamp: "",
     goalId: "",
-    userId: "",
+    userEmail: "",
     goalPriority: TaskPriority.low,
     goalType: TaskType.daily,
   );
