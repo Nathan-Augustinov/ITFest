@@ -1,6 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:it_fest/constants/app_colors.dart';
 import 'package:it_fest/models/account.dart';
+import 'package:it_fest/models/goal.dart';
+import 'package:it_fest/screens/task/_utilities.dart';
 import 'package:it_fest/widgets/custom_checkbox_list.dart';
 import 'package:it_fest/widgets/custom_dropdown_button.dart';
 import 'package:it_fest/widgets/custom_text_field.dart';
@@ -13,14 +16,18 @@ class AddTaskScreen extends StatefulWidget {
 }
 
 class _AddTaskScreenState extends State<AddTaskScreen> {
-  final List<String> _typeItems = ["Daily", "A month", "Half a year"];
-
-  final List<String> _priorityItems = [
-    "Low",
-    "High",
-    "Medium",
-  ];
-
+  static const List<String> _typeItems = ["Daily", "A month", "Half a year"];
+  static const List<String> _priorityItems = ["Low", "High", "Medium"];
+  Goal goal = Goal(
+    name: "",
+    description: "",
+    deadline: "",
+    creationDate: "",
+    taskId: "",
+    userId: "",
+    taskPriority: TaskPriority.low,
+    taskType: TaskType.daily,
+  );
   //TODO: list should be fetched from db
   final List<Account> _friendList = [
     Account(
@@ -57,7 +64,12 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     )
   ];
 
-//TODO: should be initialize with the account list
+  @override
+  initState() {
+    super.initState();
+  }
+
+  //TODO: should be initialize with the account list
   List<bool> _checkBoxes = [false, false, false, false];
 
   showCheckBoxDialog() {
@@ -148,10 +160,11 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                           textAlign: TextAlign.center,
                         ),
                         onPressed: () {
-                          _checkBoxes.forEach((element) {
-                            print(element);
-                          });
-                          //TODO: add task to db
+                          String userEmail =
+                              FirebaseAuth.instance.currentUser?.email ?? "";
+                          if (userEmail.isNotEmpty) {
+                            addPersonalGoalToForebase(goal, userEmail);
+                          }
                         }),
                   ),
                 ),

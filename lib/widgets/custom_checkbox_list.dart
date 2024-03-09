@@ -48,7 +48,6 @@ class _CheckboxDialogState extends State<CheckboxDialog> {
         ),
         ElevatedButton(
           onPressed: () {
-            //TODO: save task in db
             Navigator.of(context).pop();
           },
           child: const Text('Done'),

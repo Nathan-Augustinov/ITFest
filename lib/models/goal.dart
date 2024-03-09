@@ -1,7 +1,7 @@
 //TODO: rename?
 class Goal {
   final String taskId;
-  final String userId;
+  final String userId; //userEmail
   final String name;
   final String description;
   final TaskType taskType;
