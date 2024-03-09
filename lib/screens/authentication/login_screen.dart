@@ -5,7 +5,6 @@ import 'package:it_fest/screens/authentication/_utilities.dart';
 import 'package:it_fest/constants/app_colors.dart';
 import 'package:it_fest/screens/authentication/register_screen.dart';
 import 'package:it_fest/screens/home/bottom_nav_bar.dart';
-import 'package:it_fest/screens/start_page.dart';
 import '../../services/google_authentication.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
