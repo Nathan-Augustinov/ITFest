@@ -17,17 +17,10 @@ class AddGoalScreen extends StatefulWidget {
 }
 
 class _AddGoalScreenState extends State<AddGoalScreen> {
-  static const List<String> _typeItems = ["Daily", "A month", "Half a year"];
-  static const List<String> _priorityItems = ["Low", "High", "Medium"];
-  Goal goal = Goal(
-      name: "",
-      description: "",
-      deadlineTimestamp: "",
-      createdTimestamp: "",
-      goalId: "",
-      userEmail: "",
-      goalPriority: GoalPriority.low,
-      goalType: GoalType.daily);
+  List<bool> _checkBoxes = [];
+  String? _typeSelectedValue;
+  String? _prioritySelectedValue;
+  Goal? goal;
   String userEmail = "";
   List<String> _friendsEmails = [];
   List<Account> _friends = [];
@@ -36,6 +29,7 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
   initState() {
     super.initState();
     setState(() {
+      goal = initializeGoal();
       userEmail = FirebaseAuth.instance.currentUser?.email ?? "";
     });
   }
@@ -68,10 +62,6 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
 
     return friendAccounts;
   }
-
-  List<bool> _checkBoxes = [];
-  String? _typeSelectedValue;
-  String? _prioritySelectedValue;
 
   Future<void> showCheckBoxDialog(BuildContext context) async {
     List<Account> friendList = await getFriendAccounts();
@@ -111,7 +101,7 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
     return Scaffold(
         appBar: AppBar(
           title: const Text("Add personal goal"),
-          backgroundColor: AppColors.background,
+          backgroundColor: AppColors.lightGreen,
         ),
         //TODO: add legend
         body: Container(
@@ -127,7 +117,7 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
                   textInputType: TextInputType.name,
                   onChanged: (name) {
                     setState(() {
-                      goal.name = name;
+                      goal?.name = name;
                     });
                   },
                 ),
@@ -138,91 +128,96 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
                   textInputType: TextInputType.name,
                   onChanged: (description) {
                     setState(() {
-                      goal.description = description;
+                      goal?.description = description;
                     });
                   },
                 ),
-                //TODO: refctor in widget
-                Container(
-                    padding: const EdgeInsets.only(right: 15),
-                    alignment: Alignment.centerRight,
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton2<String>(
-                          isExpanded: true,
-                          hint: Text(
-                            "Select task type",
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Theme.of(context).hintColor,
-                            ),
-                          ),
-                          items: _typeItems
-                              .map((String item) => DropdownMenuItem<String>(
-                                    value: item,
-                                    child: Text(
-                                      item,
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                  ))
-                              .toList(),
-                          value: _typeSelectedValue,
-                          onChanged: (String? value) {
-                            setState(() {
-                              _typeSelectedValue = value;
-                            });
-                          },
-                          buttonStyleData: const ButtonStyleData(
-                            padding: EdgeInsets.symmetric(horizontal: 16),
-                            height: 40,
-                            width: 140,
-                          ),
-                          menuItemStyleData: const MenuItemStyleData(
-                            height: 50,
-                          )),
-                    )),
-
-                const SizedBox(height: 24),
-                Container(
-                    padding: const EdgeInsets.only(right: 15),
-                    alignment: Alignment.centerRight,
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton2<String>(
-                          isExpanded: true,
-                          hint: Text(
-                            "Select task priority",
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Theme.of(context).hintColor,
-                            ),
-                          ),
-                          items: _priorityItems
-                              .map((String item) => DropdownMenuItem<String>(
-                                    value: item,
-                                    child: Text(
-                                      item,
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                  ))
-                              .toList(),
-                          value: _prioritySelectedValue,
-                          onChanged: (String? value) {
-                            setState(() {
-                              _prioritySelectedValue = value;
-                            });
-                          },
-                          buttonStyleData: const ButtonStyleData(
-                            padding: EdgeInsets.symmetric(horizontal: 16),
-                            height: 40,
-                            width: 140,
-                          ),
-                          menuItemStyleData: const MenuItemStyleData(
-                            height: 50,
-                          )),
-                    )),
+                //TODO: refactor in widget
+                Row(
+                  children: [
+                    Container(
+                        padding: const EdgeInsets.only(right: 15),
+                        alignment: Alignment.centerRight,
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton2<String>(
+                              isExpanded: true,
+                              hint: Text(
+                                "Select task type",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Theme.of(context).hintColor,
+                                ),
+                              ),
+                              items: typeItems
+                                  .map(
+                                      (String item) => DropdownMenuItem<String>(
+                                            value: item,
+                                            child: Text(
+                                              item,
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                          ))
+                                  .toList(),
+                              value: _typeSelectedValue,
+                              onChanged: (String? value) {
+                                setState(() {
+                                  _typeSelectedValue = value;
+                                });
+                              },
+                              buttonStyleData: const ButtonStyleData(
+                                padding: EdgeInsets.symmetric(horizontal: 16),
+                                height: 100,
+                                width: 150,
+                              ),
+                              menuItemStyleData: const MenuItemStyleData(
+                                height: 50,
+                              )),
+                        )),
+                    const SizedBox(height: 24),
+                    Container(
+                        padding: const EdgeInsets.only(right: 15),
+                        alignment: Alignment.centerRight,
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton2<String>(
+                              isExpanded: true,
+                              hint: Text(
+                                "Select task priority",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Theme.of(context).hintColor,
+                                ),
+                              ),
+                              items: priorityItems
+                                  .map(
+                                      (String item) => DropdownMenuItem<String>(
+                                            value: item,
+                                            child: Text(
+                                              item,
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                          ))
+                                  .toList(),
+                              value: _prioritySelectedValue,
+                              onChanged: (String? value) {
+                                setState(() {
+                                  _prioritySelectedValue = value;
+                                });
+                              },
+                              buttonStyleData: const ButtonStyleData(
+                                padding: EdgeInsets.symmetric(horizontal: 16),
+                                height: 100,
+                                width: 150,
+                              ),
+                              menuItemStyleData: const MenuItemStyleData(
+                                height: 50,
+                              )),
+                        )),
+                  ],
+                ),
 
                 const SizedBox(height: 24),
                 Padding(
@@ -269,14 +264,16 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
                           if (userEmail.isNotEmpty) {
                             setState(() {
                               //TODO: validation!!
-                              goal.goalPriority = returnGoalPriority(
+                              goal?.goalPriority = returnGoalPriority(
                                   _prioritySelectedValue ?? "");
-                              goal.goalType =
+                              goal?.goalType =
                                   returnTaskType(_typeSelectedValue ?? "");
                             });
                             _createListOfCheckedFriends();
-                            addPersonalGoalToForebase(
-                                goal, userEmail, _friendsEmails);
+                            if (goal != null) {
+                              addPersonalGoalToForebase(
+                                  goal!, userEmail, _friendsEmails);
+                            }
                           }
                         }),
                   ),

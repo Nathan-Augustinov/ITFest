@@ -1,18 +1,17 @@
+import 'package:date_picker_timeline/date_picker_widget.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:it_fest/constants/app_colors.dart';
+import 'package:it_fest/models/goal.dart';
+import 'package:it_fest/screens/goals/_utilities.dart';
+import 'package:it_fest/widgets/custom_text_field.dart';
 
 enum Target { daily, monthly, halfYear }
 
 class GoalDetailsScreen extends StatefulWidget {
-  final String title;
-  final String description;
-  final Target currentTarget;
+  final Goal goal;
 
-  const GoalDetailsScreen({
-    super.key,
-    required this.title,
-    required this.description,
-    required this.currentTarget,
-  });
+  const GoalDetailsScreen({super.key, required this.goal});
 
   @override
   _GoalDetailsScreenState createState() => _GoalDetailsScreenState();
@@ -21,14 +20,15 @@ class GoalDetailsScreen extends StatefulWidget {
 class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
   late TextEditingController _titleController;
   late TextEditingController _descriptionController;
-  late Target _selectedTarget;
+  String? _typeSelectedValue;
+  String? _prioritySelectedValue;
 
   @override
   void initState() {
     super.initState();
-    _titleController = TextEditingController(text: widget.title);
-    _descriptionController = TextEditingController(text: widget.description);
-    _selectedTarget = widget.currentTarget;
+    _titleController = TextEditingController(text: widget.goal.name);
+    _descriptionController =
+        TextEditingController(text: widget.goal.description);
   }
 
   @override
@@ -42,78 +42,144 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Goal Details'),
+        title: const Text('Personal Goal Details'),
+        backgroundColor: AppColors.lightOrange,
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            TextField(
-              controller: _titleController,
-              decoration: InputDecoration(
-                labelText: 'Title',
-              ),
-            ),
-            SizedBox(height: 16.0),
-            TextField(
-              controller: _descriptionController,
-              decoration: InputDecoration(
-                labelText: 'Description',
-              ),
-              maxLines: null,
-            ),
-            SizedBox(height: 16.0),
-            DropdownButtonFormField<Target>(
-              value: _selectedTarget,
-              onChanged: (newValue) {
-                setState(() {
-                  _selectedTarget = newValue!;
-                });
+            DatePicker(
+              activeDates: [DateTime.now()],
+              height: 100,
+              getDateTimeFromTimestamp(widget.goal.createdTimestamp),
+              initialSelectedDate:
+                  getDateTimeFromTimestamp(widget.goal.createdTimestamp),
+              selectionColor: Colors.black,
+              selectedTextColor: Colors.white,
+              onDateChange: (date) {
+                setState(() {});
               },
-              items: [
-                DropdownMenuItem<Target>(
-                  value: Target.daily,
-                  child: Text('Daily'),
-                ),
-                DropdownMenuItem<Target>(
-                  value: Target.monthly,
-                  child: Text('Monthly'),
-                ),
-                DropdownMenuItem<Target>(
-                  value: Target.halfYear,
-                  child: Text('Half a Year'),
-                ),
+            ),
+            const SizedBox(height: 20),
+            CustomTextfield(
+                label: "Change title",
+                text: widget.goal.name,
+                onChanged: (text) => {},
+                textInputType: TextInputType.text),
+            const SizedBox(height: 16.0),
+            CustomTextfield(
+                label: "Change description",
+                text: widget.goal.description,
+                onChanged: (text) => {},
+                textInputType: TextInputType.text),
+            const SizedBox(height: 16.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                    padding: const EdgeInsets.only(right: 15),
+                    alignment: Alignment.centerRight,
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton2<String>(
+                          isExpanded: true,
+                          hint: Text(
+                            "Select task type",
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Theme.of(context).hintColor,
+                            ),
+                          ),
+                          items: typeItems
+                              .map((String item) => DropdownMenuItem<String>(
+                                    value: item,
+                                    child: Text(
+                                      item,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ))
+                              .toList(),
+                          value: _typeSelectedValue,
+                          onChanged: (String? value) {
+                            setState(() {
+                              _typeSelectedValue = value;
+                            });
+                          },
+                          buttonStyleData: const ButtonStyleData(
+                            padding: EdgeInsets.symmetric(horizontal: 16),
+                            height: 100,
+                            width: 150,
+                          ),
+                          menuItemStyleData: const MenuItemStyleData(
+                            height: 50,
+                          )),
+                    )),
+                const SizedBox(height: 15),
+                Container(
+                    padding: const EdgeInsets.only(right: 15),
+                    alignment: Alignment.centerRight,
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton2<String>(
+                          isExpanded: true,
+                          hint: Text(
+                            "Select task priority",
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Theme.of(context).hintColor,
+                            ),
+                          ),
+                          items: priorityItems
+                              .map((String item) => DropdownMenuItem<String>(
+                                    value: item,
+                                    child: Text(
+                                      item,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ))
+                              .toList(),
+                          value: _prioritySelectedValue,
+                          onChanged: (String? value) {
+                            setState(() {
+                              _prioritySelectedValue = value;
+                            });
+                          },
+                          buttonStyleData: const ButtonStyleData(
+                            padding: EdgeInsets.symmetric(horizontal: 16),
+                            height: 100,
+                            width: 150,
+                          ),
+                          menuItemStyleData: const MenuItemStyleData(
+                            height: 50,
+                          )),
+                    )),
               ],
-              decoration: InputDecoration(
-                labelText: 'Target',
-                border: OutlineInputBorder(),
-              ),
             ),
-            SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: () {
-                // Save changes
-                String newTitle = _titleController.text;
-                String newDescription = _descriptionController.text;
-                // Do something with the newTitle, newDescription, _selectedTarget
-                // For example, you can send them to a database or update an existing object
-              },
-              child: Text('Save Changes'),
-            ),
+            Padding(
+                padding: const EdgeInsets.only(
+                  top: 15,
+                ),
+                child: Container(
+                  padding: const EdgeInsets.all(3),
+                  decoration: const BoxDecoration(
+                    color: AppColors.orange,
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                  ),
+                  child: TextButton(
+                      child: const Text(
+                        "Save changes",
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                        textAlign: TextAlign.center,
+                      ),
+                      onPressed: () {}),
+                ))
           ],
         ),
       ),
     );
   }
-}
-
-void main() {
-  runApp(MaterialApp(
-    home: GoalDetailsScreen(
-      title: 'Exercise',
-      description: 'Do daily exercise for 30 minutes.',
-      currentTarget: Target.daily,
-    ),
-  ));
 }

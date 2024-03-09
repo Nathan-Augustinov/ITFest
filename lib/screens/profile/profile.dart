@@ -151,7 +151,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       resizeToAvoidBottomInset: false,
       backgroundColor: AppColors.navBar,
       appBar: AppBar(
-        backgroundColor: AppColors.background,
+        backgroundColor: AppColors.lightGreen,
         title: const Text("Edit profile"),
       ),
       body: Container(
