@@ -96,74 +96,72 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         //TODO: customize appBar
-        appBar: AppBar(
-            // title: const Text("User name"),
-            ),
+
         body: Container(
-          padding: AppInsets.leftRight20,
-          height: MediaQuery.of(context).size.height * 0.7,
-          child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                GestureDetector(
-                  onTap: () => uploadProfilePicture(),
-                  child: const CircleAvatar(
-                    radius: 35,
-                    backgroundImage:
-                        //TODO: if user has image ( NetworkImage('https://picsum.photos/id/237/200/300'),) put image else
-                        AssetImage('assets/images/empty_profile_pic.jpg'),
-                  ),
-                ),
-                //TODO: remove hardcoded code
-                Padding(
-                    padding: AppInsets.left10,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        //TODO: if user has name show name else show loading
-                        Text(
-                          _userName.isEmpty ? 'Loading...' : _userName,
-                          style: AppTexts.font16Bold,
-                        ),
-                        // FutureBuilder<String>(
-                        //     future: getUserFirstAndLastName(user?.email ?? ""),
-                        //     builder: (context, snapshot) {
-                        //       if (snapshot.hasData) {
-                        //         return Text(
-                        //           snapshot.data!,
-                        //           style: AppTexts.font16Bold,
-                        //         );
-                        //       } else {
-                        //         return Text(
-                        //           "Loading...",
-                        //           style: AppTexts.font16Bold,
-                        //         );
-                        //       }
-                        //     }),
-                        //TODO: if has tasks change text
-                        Padding(
-                          padding: AppInsets.top10,
-                          child: Text(
-                            "You have no tasks due today!",
-                            style: AppTexts.font14Normal,
-                          ),
-                        )
-                      ],
-                    )),
-              ],
+      padding: AppInsets.leftRight20.copyWith(top: 50),
+      height: MediaQuery.of(context).size.height * 0.7,
+      child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            GestureDetector(
+              onTap: () => uploadProfilePicture(),
+              child: const CircleAvatar(
+                radius: 35,
+                backgroundImage:
+                    //TODO: if user has image ( NetworkImage('https://picsum.photos/id/237/200/300'),) put image else
+                    AssetImage('assets/images/empty_profile_pic.jpg'),
+              ),
             ),
-            Container(
-                height: 170,
-                padding: AppInsets.top20,
-                child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: _tasks.length,
-                    itemBuilder: (context, index) => TaskCard(
-                          goal: _tasks[index],
-                        )))
-          ]),
-        ));
+            //TODO: remove hardcoded code
+            Padding(
+                padding: AppInsets.left10,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    //TODO: if user has name show name else show loading
+                    Text(
+                      _userName.isEmpty ? 'Loading...' : _userName,
+                      style: AppTexts.font16Bold,
+                    ),
+                    // FutureBuilder<String>(
+                    //     future: getUserFirstAndLastName(user?.email ?? ""),
+                    //     builder: (context, snapshot) {
+                    //       if (snapshot.hasData) {
+                    //         return Text(
+                    //           snapshot.data!,
+                    //           style: AppTexts.font16Bold,
+                    //         );
+                    //       } else {
+                    //         return Text(
+                    //           "Loading...",
+                    //           style: AppTexts.font16Bold,
+                    //         );
+                    //       }
+                    //     }),
+                    //TODO: if has tasks change text
+                    Padding(
+                      padding: AppInsets.top10,
+                      child: Text(
+                        "You have no tasks due today!",
+                        style: AppTexts.font14Normal,
+                      ),
+                    )
+                  ],
+                )),
+          ],
+        ),
+        Container(
+            height: 170,
+            padding: AppInsets.top20,
+            child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: _tasks.length,
+                itemBuilder: (context, index) => TaskCard(
+                      goal: _tasks[index],
+                    )))
+      ]),
+    ));
   }
 
   Future<String> getUserFirstAndLastName(String email) async {

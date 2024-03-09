@@ -89,7 +89,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text("Add task"),
+          title: const Text("Add personal goal"),
         ),
         //TODO: add legend
         body: Container(
