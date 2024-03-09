@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -33,12 +34,6 @@ class _HomeScreenState extends State<HomeScreen> {
       user = FirebaseAuth.instance.currentUser;
     });
     _fetchUserName(user?.email ?? "");
-  }
-
-  @override
-  didChangeDependencies() async {
-    super.didChangeDependencies();
-    userGoals = await getGoalsForUser(user?.email ?? "");
   }
 
 //TODO: show latest goals
@@ -81,6 +76,42 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     return userGoals;
+  }
+
+  Future<List<Goal>> getGoalsSharedForUser(String userEmail) async {
+    List<Goal> userSharedGoals = [];
+    QuerySnapshot goalsQuery =
+        await FirebaseFirestore.instance.collection('goals').get();
+
+    String goalId = '';
+    for (int i = 0; i < goalsQuery.docs.length; i++) {
+      goalId = goalsQuery.docs[i].id;
+      await FirebaseFirestore.instance
+          .collection('goals')
+          .doc(goalId)
+          .collection('users')
+          .get()
+          .then((QuerySnapshot snapshot) {
+        snapshot.docs.forEach((doc) async {
+          if (doc['email'] == userEmail) {
+            DocumentSnapshot goalDoc = await FirebaseFirestore.instance
+                .collection('goals')
+                .doc(goalId)
+                .get();
+            userSharedGoals.add(Goal(
+                goalId: goalId,
+                name: goalDoc['title'],
+                description: goalDoc['description'],
+                userEmail: goalDoc['userEmail'],
+                createdTimestamp: goalDoc['createdTime'],
+                deadlineTimestamp: goalDoc['deadline'],
+                goalType: getType(goalDoc['type']),
+                goalPriority: getPriority(goalDoc['priority'])));
+          }
+        });
+      });
+    }
+    return userSharedGoals;
   }
 
   //TODO: not working properly
@@ -185,17 +216,27 @@ class _HomeScreenState extends State<HomeScreen> {
           'Shared with friends tasks',
           style: AppTexts.font16Bold,
         ),
-        Expanded(
-          child: ListView.builder(
-              scrollDirection: Axis.vertical,
-              itemCount: _tasks.length,
-              itemBuilder: (context, index) => Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: TaskCard(
-                      goal: _tasks[index],
-                    ),
-                  )),
-        ),
+        FutureBuilder<List<Goal>>(
+            future: getGoalsSharedForUser(user?.email ?? ""),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              } else {
+                return Expanded(
+                  child: ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, index) => Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: TaskCard(
+                              goal: snapshot.data![index],
+                            ),
+                          )),
+                );
+              }
+            }),
       ]),
     ));
   }
