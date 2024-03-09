@@ -85,6 +85,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
         });
   }
 
+  //TODO: clear fields after save
   @override
   Widget build(BuildContext context) {
     return Scaffold(

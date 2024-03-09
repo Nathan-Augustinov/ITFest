@@ -9,6 +9,7 @@ void addPersonalGoalToForebase(Goal goal, String userEmail) {
     'type': goal.goalType.toString(),
     'userEmail': userEmail,
     'deadline': returnDeadlineTimestamp(goal.goalType),
+    'createdTime': getCreatedTimeMillisecondsTimestamp(),
     'friends': [],
   });
 }

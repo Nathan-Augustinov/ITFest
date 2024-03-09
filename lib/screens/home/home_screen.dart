@@ -58,6 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _fetchUserName(user?.email ?? "");
   }
 
+  //TODO: not working properly
   void uploadProfilePicture() async {
     final image = await ImagePicker().pickImage(
         source: ImageSource.gallery,
@@ -66,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
         imageQuality: 75);
 
     String userEmail = user?.email ?? "";
-    print("userEmail : $userEmail");
+
     Reference ref =
         FirebaseStorage.instance.ref().child("${userEmail}_profilepic.jpg");
     await ref.putFile(File(image!.path));
@@ -96,7 +97,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         //TODO: customize appBar
-
         body: Container(
       padding: AppInsets.leftRight20.copyWith(top: 50),
       height: MediaQuery.of(context).size.height * 0.7,
@@ -122,23 +122,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     //TODO: if user has name show name else show loading
                     Text(
                       _userName.isEmpty ? 'Loading...' : _userName,
-                      style: AppTexts.font16Bold,
+                      style: AppTexts.font16Bold.copyWith(fontSize: 20),
                     ),
-                    // FutureBuilder<String>(
-                    //     future: getUserFirstAndLastName(user?.email ?? ""),
-                    //     builder: (context, snapshot) {
-                    //       if (snapshot.hasData) {
-                    //         return Text(
-                    //           snapshot.data!,
-                    //           style: AppTexts.font16Bold,
-                    //         );
-                    //       } else {
-                    //         return Text(
-                    //           "Loading...",
-                    //           style: AppTexts.font16Bold,
-                    //         );
-                    //       }
-                    //     }),
                     //TODO: if has tasks change text
                     Padding(
                       padding: AppInsets.top10,

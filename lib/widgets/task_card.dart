@@ -28,7 +28,10 @@ class TaskCard extends StatelessWidget {
               children: [
                 Padding(
                     padding: AppInsets.leftRightTopBottom10,
-                    child: Text(goal.name)),
+                    child: Text(
+                      goal.name,
+                      // style: AppTexts.font16Bold,
+                    )),
               ],
             ),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
