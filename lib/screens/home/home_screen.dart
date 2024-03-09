@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:it_fest/constants/app_texts.dart';
 import 'package:it_fest/constants/insets.dart';
-import 'package:it_fest/models/account.dart';
 import 'package:it_fest/models/goal.dart';
 import 'package:it_fest/screens/home/_utilities.dart';
 import 'package:it_fest/widgets/task_card.dart';
@@ -19,8 +18,9 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late User? user;
-  late Account _account;
+  // late Account _account;
   String _userName = '';
+  String _photoURL = '';
   //TODO?
   List<Goal> _tasks = [];
   List<Goal> userGoals = [];
@@ -33,12 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
       user = FirebaseAuth.instance.currentUser;
     });
     _fetchUserName(user?.email ?? "");
-  }
-
-  @override
-  didChangeDependencies() async {
-    super.didChangeDependencies();
-    userGoals = await getGoalsForUser(user?.email ?? "");
+    _fetchUserProfilePicture(user?.email ?? "");
   }
 
 //TODO: show latest goals
@@ -83,6 +78,42 @@ class _HomeScreenState extends State<HomeScreen> {
     return userGoals;
   }
 
+  Future<List<Goal>> getGoalsSharedForUser(String userEmail) async {
+    List<Goal> userSharedGoals = [];
+    QuerySnapshot goalsQuery =
+        await FirebaseFirestore.instance.collection('goals').get();
+
+    String goalId = '';
+    for (int i = 0; i < goalsQuery.docs.length; i++) {
+      goalId = goalsQuery.docs[i].id;
+      await FirebaseFirestore.instance
+          .collection('goals')
+          .doc(goalId)
+          .collection('users')
+          .get()
+          .then((QuerySnapshot snapshot) {
+        snapshot.docs.forEach((doc) async {
+          if (doc['email'] == userEmail) {
+            DocumentSnapshot goalDoc = await FirebaseFirestore.instance
+                .collection('goals')
+                .doc(goalId)
+                .get();
+            userSharedGoals.add(Goal(
+                goalId: goalId,
+                name: goalDoc['title'],
+                description: goalDoc['description'],
+                userEmail: goalDoc['userEmail'],
+                createdTimestamp: goalDoc['createdTime'],
+                deadlineTimestamp: goalDoc['deadline'],
+                goalType: getType(goalDoc['type']),
+                goalPriority: getPriority(goalDoc['priority'])));
+          }
+        });
+      });
+    }
+    return userSharedGoals;
+  }
+
   //TODO: not working properly
   void uploadProfilePicture() async {
     final image = await ImagePicker().pickImage(
@@ -99,7 +130,8 @@ class _HomeScreenState extends State<HomeScreen> {
     ref.getDownloadURL().then((value) {
       if (mounted) {
         setState(() {
-          _account.photoURL = value;
+          // _account.photoURL = value;
+          _photoURL = value;
         });
       }
     });
@@ -112,7 +144,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     .collection('accounts')
                     .doc(element.id);
                 if (element['photoURL'] != "") {
-                  docRef.update({'photoURL': _account.photoURL});
+                  // docRef.update({'photoURL': _account.photoURL});
+                  docRef.update({'photoURL': _photoURL});
                 }
               }
             }));
@@ -131,11 +164,14 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             GestureDetector(
               onTap: () => uploadProfilePicture(),
-              child: const CircleAvatar(
+              child: CircleAvatar(
                 radius: 35,
                 backgroundImage:
                     //TODO: if user has image ( NetworkImage('https://picsum.photos/id/237/200/300'),) put image else
-                    AssetImage('assets/images/empty_profile_pic.jpg'),
+                    // AssetImage('assets/images/empty_profile_pic.jpg'),
+                    _photoURL.startsWith('http')
+                        ? NetworkImage(_photoURL)
+                        : AssetImage(_photoURL) as ImageProvider,
               ),
             ),
             //TODO: remove hardcoded code
@@ -185,17 +221,27 @@ class _HomeScreenState extends State<HomeScreen> {
           'Shared with friends',
           style: AppTexts.font16Bold,
         ),
-        Expanded(
-          child: ListView.builder(
-              scrollDirection: Axis.vertical,
-              itemCount: _tasks.length,
-              itemBuilder: (context, index) => Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: GoalCard(
-                      goal: _tasks[index],
-                    ),
-                  )),
-        ),
+        FutureBuilder<List<Goal>>(
+            future: getGoalsSharedForUser(user?.email ?? ""),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              } else {
+                return Expanded(
+                  child: ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, index) => Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: GoalCard(
+                              goal: snapshot.data![index],
+                            ),
+                          )),
+                );
+              }
+            }),
       ]),
     ));
   }
@@ -221,5 +267,27 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _userName = userName;
     });
+  }
+
+  void _fetchUserProfilePicture(String email) async {
+    String fileName = "${email}_profilepic.jpg";
+
+    try {
+      String url =
+          await FirebaseStorage.instance.ref().child(fileName).getDownloadURL();
+      setState(() {
+        _photoURL = url;
+      });
+    } catch (e) {
+      if (user?.photoURL != null) {
+        setState(() {
+          _photoURL = user!.photoURL!;
+        });
+      } else {
+        setState(() {
+          _photoURL = 'assets/images/empty_profile_pic.jpg';
+        });
+      }
+    }
   }
 }
