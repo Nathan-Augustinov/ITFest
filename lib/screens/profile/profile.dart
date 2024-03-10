@@ -118,7 +118,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 style: TextButton.styleFrom(
                   textStyle: const TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontFamily: 'Montserrat',
                   ),
                   shape: const BeveledRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(5))),
@@ -226,10 +225,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: TextButton(
                   child: const Text(
                     "Suggest an improvement",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'Montserrat',
-                        fontSize: 18),
+                    style: TextStyle(color: Colors.white, fontSize: 18),
                     textAlign: TextAlign.center,
                   ),
                   onPressed: () => showSendEmailDialog(),

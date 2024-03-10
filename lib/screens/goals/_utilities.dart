@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:it_fest/models/goal.dart';
+import 'package:it_fest/models/goal_friend.dart';
 
 const List<String> typeItems = ["Daily", "Weekly", "A month", "Half a year"];
 const List<String> priorityItems = ["Low", "High", "Medium"];
@@ -39,6 +40,27 @@ void addPersonalGoalToForebase(
   });
 }
 
+Future<List<GoalFriend>> getSharedGoalFriendList(Goal goal) async {
+  List<GoalFriend> sharedGoalFriends = [];
+
+  CollectionReference goalsCollection =
+      FirebaseFirestore.instance.collection('goals');
+
+  DocumentReference goalDocument = goalsCollection.doc(goal.goalId);
+  CollectionReference usersCollection = goalDocument.collection('users');
+  QuerySnapshot querySnapshot = await usersCollection.get();
+
+  querySnapshot.docs.forEach((element) {
+    sharedGoalFriends.add(GoalFriend(
+        email: element['email'],
+        completed: element['completed'],
+        completedTimestamp: element['completedTimestamp'],
+        owner: element['owner']));
+  });
+
+  return sharedGoalFriends;
+}
+
 void editPersonalGoal(Goal goal, String userEmail, bool isChecked) async {
   CollectionReference goalsCollection =
       FirebaseFirestore.instance.collection('goals');
@@ -53,8 +75,9 @@ void editPersonalGoal(Goal goal, String userEmail, bool isChecked) async {
     'createdTime': getCreatedTimeMillisecondsTimestamp(),
   });
 
-  CollectionReference usersCollection = goalDocument.collection('accounts');
+  CollectionReference usersCollection = goalDocument.collection('users');
   QuerySnapshot querySnapshot = await usersCollection.get();
+
   querySnapshot.docs.forEach((doc) {
     if (doc['email'] == userEmail) {
       DocumentReference docReference = usersCollection.doc(doc.id);
@@ -132,7 +155,6 @@ Goal initGoalWithOldOne(Goal goal) {
       goalType: goal.goalType);
 }
 
-//TODO: refactor
 GoalPriority returnGoalPriority(String priority) {
   switch (priority) {
     case "Low":

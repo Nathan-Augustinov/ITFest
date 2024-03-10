@@ -82,26 +82,20 @@ class _HomeScreenState extends State<HomeScreen> {
               onTap: () => uploadProfilePicture(),
               child: CircleAvatar(
                 radius: 35,
-                backgroundImage:
-                    //TODO: if user has image ( NetworkImage('https://picsum.photos/id/237/200/300'),) put image else
-                    // AssetImage('assets/images/empty_profile_pic.jpg'),
-                    _photoURL.startsWith('http')
-                        ? NetworkImage(_photoURL)
-                        : AssetImage(_photoURL) as ImageProvider,
+                backgroundImage: _photoURL.startsWith('http')
+                    ? NetworkImage(_photoURL)
+                    : AssetImage(_photoURL) as ImageProvider,
               ),
             ),
-            //TODO: remove hardcoded code
             Padding(
                 padding: AppInsets.left10,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    //TODO: if user has name show name else show loading
                     Text(
                       _userName.isEmpty ? 'Loading...' : _userName,
                       style: AppTexts.font16Bold.copyWith(fontSize: 20),
                     ),
-                    //TODO: if has tasks change text
                     Padding(
                       padding: AppInsets.top10,
                       child: FutureBuilder<int>(
@@ -174,12 +168,23 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: ListView.builder(
                       scrollDirection: Axis.vertical,
                       itemCount: snapshot.data!.length,
-                      itemBuilder: (context, index) => Padding(
-                            padding: const EdgeInsets.only(bottom: 10),
-                            child: GoalCard(
-                                goal: snapshot.data![index],
-                                isShared: true,
-                                insets: const EdgeInsets.all(0)),
+                      itemBuilder: (context, index) => GestureDetector(
+                            onTap: () => {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => GoalDetailsScreen(
+                                            goal: snapshot.data![index],
+                                            hasFriends: true,
+                                          )))
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.only(bottom: 10),
+                              child: GoalCard(
+                                  goal: snapshot.data![index],
+                                  isShared: true,
+                                  insets: const EdgeInsets.all(0)),
+                            ),
                           )),
                 );
               }

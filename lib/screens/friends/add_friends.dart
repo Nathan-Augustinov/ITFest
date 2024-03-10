@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:it_fest/constants/app_colors.dart';
 import 'package:it_fest/constants/app_texts.dart';
 
 class AddFriendsPage extends StatefulWidget {
@@ -115,7 +114,6 @@ class _AddFriendsPageState extends State<AddFriendsPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add Friends'),
-        backgroundColor: AppColors.light_green,
       ),
       body: SingleChildScrollView(
         child: Column(
