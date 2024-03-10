@@ -52,7 +52,7 @@ Color getColorByType(GoalType type) {
     case GoalType.daily:
       return AppColors.green;
     case GoalType.weekly:
-      return AppColors.pink;
+      return AppColors.blue;
     case GoalType.monthly:
       return AppColors.purple;
     case GoalType.halfYear:
