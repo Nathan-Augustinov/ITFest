@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 class AppInsets {
   static EdgeInsets leftRight20 = const EdgeInsets.only(left: 20, right: 20);
+  static EdgeInsets leftRight5 = const EdgeInsets.only(left: 5, right: 5);
+  static EdgeInsets leftRight10 = const EdgeInsets.only(left: 10, right: 10);
   static EdgeInsets leftRightTopBottom10 = const EdgeInsets.all(10);
   static EdgeInsets left5 = const EdgeInsets.only(left: 5);
   static EdgeInsets left10 = const EdgeInsets.only(left: 10);
