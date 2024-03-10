@@ -36,7 +36,6 @@ class _SharedGoalFriendsCardState extends State<SharedGoalFriendsCard> {
                         height: 170,
                         padding: AppInsets.top20.copyWith(bottom: 10),
                         child: Container(
-                          //   width: 230,
                           decoration: BoxDecoration(
                             color: AppColors.friendCardOrange,
                             borderRadius: BorderRadius.circular(16.0),

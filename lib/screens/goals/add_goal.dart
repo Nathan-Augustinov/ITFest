@@ -271,6 +271,7 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
                             _createListOfCheckedFriends();
                             addPersonalGoalToForebase(
                                 goal, userEmail, _friendsEmails);
+                            Navigator.pop(context);
                           }
                         }),
                   ),

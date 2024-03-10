@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:it_fest/constants/app_colors.dart';
 import 'package:it_fest/constants/app_texts.dart';
+import 'package:it_fest/constants/insets.dart';
 
 class AddFriendsPage extends StatefulWidget {
   @override
@@ -112,15 +114,18 @@ class _AddFriendsPageState extends State<AddFriendsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.lightGreen,
       appBar: AppBar(
         title: const Text('Add Friends'),
+        backgroundColor: AppColors.green,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
+      body: Container(
+        color: AppColors.lightGreen,
+        padding: AppInsets.leftRight20.copyWith(top: 15),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Row(
                 children: [
                   Expanded(
                     child: TextField(
@@ -149,84 +154,86 @@ class _AddFriendsPageState extends State<AddFriendsPage> {
                   ),
                 ],
               ),
-            ),
-            if (isUserFound)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Column(
-                  children: [
-                    Text(
-                      'User Found: $foundUserEmail',
-                      style: const TextStyle(color: Colors.green, fontSize: 16),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        addUserAsFriend(foundUserEmail!);
-                        isUserFound = false;
-                      },
-                      child: const Text('Add as Friend'),
-                    ),
-                  ],
+              if (isUserFound)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Column(
+                    children: [
+                      Text(
+                        'User Found: $foundUserEmail',
+                        style:
+                            const TextStyle(color: Colors.green, fontSize: 16),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          addUserAsFriend(foundUserEmail!);
+                          isUserFound = false;
+                        },
+                        child: const Text('Add as Friend'),
+                      ),
+                    ],
+                  ),
+                )
+              else if (errorMessage != '')
+                Text(
+                  errorMessage,
+                  style: const TextStyle(color: Colors.red, fontSize: 16),
                 ),
-              )
-            else if (errorMessage != '')
+              const SizedBox(height: 40),
               Text(
-                errorMessage,
-                style: const TextStyle(color: Colors.red, fontSize: 16),
+                'Your friends',
+                style: AppTexts.font16Bold,
               ),
-            const SizedBox(height: 40),
-            Text(
-              'Your friends',
-              style: AppTexts.font16Bold,
-            ),
-            const SizedBox(height: 16),
-            ListView.builder(
-              physics:
-                  const NeverScrollableScrollPhysics(), // To disable scrolling within the ListView
-              shrinkWrap:
-                  true, // Important to let ListView know it's inside a SingleChildScrollView
-              itemCount: friends.length,
-              itemBuilder: (context, index) {
-                return Card(
-                  // Wrap ListTile with Card for better visuals
-                  elevation: 2, // Adds a slight shadow under each Card
-                  margin: const EdgeInsets.symmetric(
-                      vertical: 4, horizontal: 8), // Spacing between each Card
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      // Display an initial or icon in the circle avatar
-                      backgroundColor: Theme.of(context)
-                          .primaryColor, // Use the primary theme color for the background
-                      child: Text(
-                        friends[index][0]
-                            .toUpperCase(), // Display the first letter of the friend's name
+              const SizedBox(height: 16),
+              ListView.builder(
+                physics:
+                    const NeverScrollableScrollPhysics(), // To disable scrolling within the ListView
+                shrinkWrap:
+                    true, // Important to let ListView know it's inside a SingleChildScrollView
+                itemCount: friends.length,
+                itemBuilder: (context, index) {
+                  return Card(
+                    // Wrap ListTile with Card for better visuals
+                    elevation: 2, // Adds a slight shadow under each Card
+                    margin: const EdgeInsets.symmetric(
+                        vertical: 4,
+                        horizontal: 8), // Spacing between each Card
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        // Display an initial or icon in the circle avatar
+                        backgroundColor: Theme.of(context)
+                            .primaryColor, // Use the primary theme color for the background
+                        child: Text(
+                          friends[index][0]
+                              .toUpperCase(), // Display the first letter of the friend's name
+                          style: const TextStyle(
+                              color: Colors.white), // Text color for contrast
+                        ),
+                      ),
+                      title: Text(
+                        friends[index], // The friend's full name or identifier
                         style: const TextStyle(
-                            color: Colors.white), // Text color for contrast
+                          fontWeight: FontWeight.normal,
+                        ), // Make the name bold
+                      ),
+                      trailing: IconButton(
+                        icon: Icon(Icons.delete,
+                            color: Theme.of(context)
+                                .colorScheme
+                                .error), // Example: delete icon
+                        onPressed: () {
+                          // Implement your deletion or action logic here
+                          deleteUserAsFriend(friends[index]);
+                          print('Delete ${friends[index]}');
+                        },
                       ),
                     ),
-                    title: Text(
-                      friends[index], // The friend's full name or identifier
-                      style: const TextStyle(
-                        fontWeight: FontWeight.normal,
-                      ), // Make the name bold
-                    ),
-                    trailing: IconButton(
-                      icon: Icon(Icons.delete,
-                          color: Theme.of(context)
-                              .colorScheme
-                              .error), // Example: delete icon
-                      onPressed: () {
-                        // Implement your deletion or action logic here
-                        deleteUserAsFriend(friends[index]);
-                        print('Delete ${friends[index]}');
-                      },
-                    ),
-                  ),
-                );
-              },
-            ),
-            // Search button and input field
-          ],
+                  );
+                },
+              ),
+              // Search button and input field
+            ],
+          ),
         ),
       ),
     );
