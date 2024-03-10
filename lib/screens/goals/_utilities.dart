@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:it_fest/models/goal.dart';
 
-const List<String> typeItems = ["Daily", "A month", "Half a year"];
+const List<String> typeItems = ["Daily", "Weekly", "A month", "Half a year"];
 const List<String> priorityItems = ["Low", "High", "Medium"];
 
 void addPersonalGoalToForebase(
@@ -21,7 +21,6 @@ void addPersonalGoalToForebase(
 
   CollectionReference usersCollection = goalDocument.collection('users');
 
-//TODO: refactor
   await usersCollection.add({
     'email': userEmail,
     'owner': true,
@@ -61,6 +60,8 @@ String returnDeadlineTimestamp(GoalType type) {
   switch (type) {
     case GoalType.daily:
       return getDeadlineMillisecondsTimestamp(1);
+    case GoalType.weekly:
+      return getDeadlineMillisecondsTimestamp(7);
     case GoalType.monthly:
       return getDeadlineMillisecondsTimestamp(30);
     case GoalType.halfYear:
@@ -131,6 +132,8 @@ String getTaskDropdownText(GoalType type) {
   switch (type) {
     case GoalType.daily:
       return "Daily";
+    case GoalType.weekly:
+      return "Weekly";
     case GoalType.monthly:
       return "A month";
     case GoalType.halfYear:
