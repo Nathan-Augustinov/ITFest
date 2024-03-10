@@ -182,6 +182,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               padding: const EdgeInsets.only(bottom: 10),
                               child: GoalCard(
                                   goal: snapshot.data![index],
+                                  isShared: true,
                                   insets: const EdgeInsets.all(0)),
                             ),
                           )),
