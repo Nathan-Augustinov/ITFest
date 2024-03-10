@@ -21,7 +21,7 @@ class Goal {
   });
 }
 
-enum GoalType { daily, monthly, halfYear }
+enum GoalType { daily, weekly, monthly, halfYear }
 
 enum GoalPriority { low, medium, high }
 
