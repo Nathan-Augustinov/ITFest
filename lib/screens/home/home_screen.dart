@@ -153,8 +153,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               },
                               child: GoalCard(
                                 goal: snapshot.data![index],
+                                insets: null,
                               ),
-                              insets: null,
                             )));
               }
             }),

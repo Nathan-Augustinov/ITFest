@@ -47,6 +47,8 @@ String returnDeadlineTimestamp(GoalType type) {
   switch (type) {
     case GoalType.daily:
       return getDeadlineMillisecondsTimestamp(1);
+    case GoalType.weekly:
+      return getDeadlineMillisecondsTimestamp(7);
     case GoalType.monthly:
       return getDeadlineMillisecondsTimestamp(30);
     case GoalType.halfYear:
