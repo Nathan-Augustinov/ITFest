@@ -110,9 +110,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
                     children: [
                       MaterialButton(
                         onPressed: () {
-                          //TODO: send data accordingly
                           setState(() {
-                            currentScreen = AllGoalsScreen();
+                            currentScreen = const AllGoalsScreen();
                             currentTabIndex = 2;
                           });
                         },
@@ -130,7 +129,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
                     children: [
                       MaterialButton(
                         onPressed: () {
-                          //TODO: send data accordingly
                           setState(() {
                             currentScreen = AddFriendsPage();
                             currentTabIndex = 3;
@@ -150,7 +148,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
                     children: [
                       MaterialButton(
                         onPressed: () {
-                          //TODO: send data accordingly
                           setState(() {
                             currentScreen = ProfileScreen(
                               account: account,

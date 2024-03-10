@@ -2,9 +2,11 @@ import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:it_fest/constants/app_colors.dart';
 import 'package:it_fest/models/goal.dart';
 import 'package:it_fest/screens/goals/_utilities.dart';
+import 'package:it_fest/screens/home/_utilities.dart';
 import 'package:it_fest/widgets/custom_text_field.dart';
 import 'package:it_fest/widgets/goal_with_friend_card.dart';
 
@@ -225,6 +227,17 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
                         Navigator.pop(context);
                       }),
                 )),
+            Padding(
+              padding: const EdgeInsets.only(top: 30),
+              child: IconButton(
+                icon: Icon(Icons.delete,
+                    color: Theme.of(context).colorScheme.error),
+                onPressed: () {
+                  deleteTask(widget.goal);
+                  Navigator.pop(context);
+                },
+              ),
+            ),
             widget.hasFriends != null && widget.hasFriends!
                 ? SharedGoalFriendsCard(goal: widget.goal)
                 : Container()

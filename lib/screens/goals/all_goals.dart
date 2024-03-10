@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:it_fest/constants/app_colors.dart';
 import 'package:it_fest/constants/insets.dart';
 import 'package:it_fest/models/goal.dart';
+import 'package:it_fest/screens/goals/goal_details_screen.dart';
 import 'package:it_fest/screens/home/_utilities.dart';
 import 'package:it_fest/widgets/goal_card.dart';
 
@@ -19,7 +20,6 @@ class _AllGoalsScreenState extends State<AllGoalsScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _allUserGoalsFuture = getAllGoals();
   }
@@ -58,7 +58,6 @@ class _AllGoalsScreenState extends State<AllGoalsScreen> {
       }
     } catch (e) {
       print('Error getting goals: $e');
-      // Return an empty list or handle the error as per your application's requirement.
     }
 
     return userGoals;
@@ -236,12 +235,21 @@ class _AllGoalsScreenState extends State<AllGoalsScreen> {
           scrollDirection: Axis.vertical,
           itemCount: goals.length,
           itemBuilder: (context, index) => Padding(
-                padding: const EdgeInsets.only(bottom: 10),
+              padding: const EdgeInsets.only(bottom: 10),
+              child: GestureDetector(
+                onTap: () => {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => GoalDetailsScreen(
+                                goal: snapshot.data![index],
+                              )))
+                },
                 child: GoalCard(
                   goal: goals[index],
                   insets: const EdgeInsets.all(0),
                 ),
-              ));
+              )));
     } else {
       return const Center(child: Text('No goals found'));
     }

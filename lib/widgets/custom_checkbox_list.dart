@@ -13,7 +13,6 @@ class CheckboxDialog extends StatefulWidget {
 }
 
 class _CheckboxDialogState extends State<CheckboxDialog> {
-//TODO: customize with colors
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
