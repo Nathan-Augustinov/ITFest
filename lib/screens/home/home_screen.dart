@@ -180,7 +180,9 @@ class _HomeScreenState extends State<HomeScreen> {
             }),
         const SizedBox(height: 30),
         Row(
-          children: <Widget>[
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
             Padding(
               padding: AppInsets.leftRight10,
               child: GestureDetector(
@@ -217,6 +219,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   header: const Text("Water"),
                   center: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       const Icon(
                         Icons.water_drop,
@@ -240,7 +243,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   radius: 45.0,
                   lineWidth: 10.0,
                   percent: _sleepGoal / 8,
-                  header: Text("Sleep"),
+                  header: const Text("Sleep"),
                   center: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
