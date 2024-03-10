@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:it_fest/constants/app_colors.dart';
 import 'package:it_fest/models/goal.dart';
@@ -8,6 +9,13 @@ String getRemainedNumberOfDays(String deadlineTimestamp) {
       DateTime.fromMillisecondsSinceEpoch(int.parse(deadlineTimestamp));
   int difference = futureDate.difference(now).inDays;
   return difference.toString();
+}
+
+void deleteTask(Goal goal) async {
+  await FirebaseFirestore.instance
+      .collection('goals')
+      .doc(goal.goalId)
+      .delete();
 }
 
 GoalPriority getPriority(String priority) {

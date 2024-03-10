@@ -186,43 +186,32 @@ class _AddFriendsPageState extends State<AddFriendsPage> {
               ),
               const SizedBox(height: 16),
               ListView.builder(
-                physics:
-                    const NeverScrollableScrollPhysics(), // To disable scrolling within the ListView
-                shrinkWrap:
-                    true, // Important to let ListView know it's inside a SingleChildScrollView
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
                 itemCount: friends.length,
                 itemBuilder: (context, index) {
                   return Card(
-                    // Wrap ListTile with Card for better visuals
-                    elevation: 2, // Adds a slight shadow under each Card
-                    margin: const EdgeInsets.symmetric(
-                        vertical: 4,
-                        horizontal: 8), // Spacing between each Card
+                    elevation: 2,
+                    margin:
+                        const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                     child: ListTile(
                       leading: CircleAvatar(
-                        // Display an initial or icon in the circle avatar
-                        backgroundColor: Theme.of(context)
-                            .primaryColor, // Use the primary theme color for the background
+                        backgroundColor: Theme.of(context).primaryColor,
                         child: Text(
-                          friends[index][0]
-                              .toUpperCase(), // Display the first letter of the friend's name
-                          style: const TextStyle(
-                              color: Colors.white), // Text color for contrast
+                          friends[index][0].toUpperCase(),
+                          style: const TextStyle(color: Colors.white),
                         ),
                       ),
                       title: Text(
-                        friends[index], // The friend's full name or identifier
+                        friends[index],
                         style: const TextStyle(
                           fontWeight: FontWeight.normal,
-                        ), // Make the name bold
+                        ),
                       ),
                       trailing: IconButton(
                         icon: Icon(Icons.delete,
-                            color: Theme.of(context)
-                                .colorScheme
-                                .error), // Example: delete icon
+                            color: Theme.of(context).colorScheme.error),
                         onPressed: () {
-                          // Implement your deletion or action logic here
                           deleteUserAsFriend(friends[index]);
                           print('Delete ${friends[index]}');
                         },
