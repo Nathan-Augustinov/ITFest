@@ -19,6 +19,7 @@ void addPersonalGoalToForebase(
     'createdTime': getCreatedTimeMillisecondsTimestamp(),
   });
 
+  goalDocument.update({'goalId': goalDocument.id});
   CollectionReference usersCollection = goalDocument.collection('users');
 
   await usersCollection.add({
@@ -38,11 +39,12 @@ void addPersonalGoalToForebase(
   });
 }
 
-void editPersonalGoal(Goal goal) async {
+void editPersonalGoal(Goal goal, String userEmail, bool isChecked) async {
   CollectionReference goalsCollection =
       FirebaseFirestore.instance.collection('goals');
+  DocumentReference goalDocument = goalsCollection.doc(goal.goalId);
 
-  await goalsCollection.add({
+  await goalsCollection.doc(goal.goalId).update({
     'title': goal.name,
     'description': goal.description,
     'priority': goal.goalPriority.name,
@@ -50,6 +52,23 @@ void editPersonalGoal(Goal goal) async {
     'deadline': returnDeadlineTimestamp(goal.goalType),
     'createdTime': getCreatedTimeMillisecondsTimestamp(),
   });
+
+  CollectionReference usersCollection = goalDocument.collection('accounts');
+  QuerySnapshot querySnapshot = await usersCollection.get();
+  querySnapshot.docs.forEach((doc) {
+    if (doc['email'] == userEmail) {
+      DocumentReference docReference = usersCollection.doc(doc.id);
+      docReference.update({
+        'email': userEmail,
+        'completed': isChecked,
+        'completedTimestamp': getCompletedTimestamp(isChecked)
+      });
+    }
+  });
+}
+
+String getCompletedTimestamp(bool isChecked) {
+  return isChecked ? DateTime.now().millisecondsSinceEpoch.toString() : '';
 }
 
 bool checkIfOwmer(String ownerEmail, String email) {
@@ -99,6 +118,18 @@ Goal initializeGoal() {
       userEmail: "",
       goalPriority: GoalPriority.low,
       goalType: GoalType.daily);
+}
+
+Goal initGoalWithOldOne(Goal goal) {
+  return Goal(
+      name: goal.name,
+      description: goal.description,
+      deadlineTimestamp: goal.deadlineTimestamp,
+      createdTimestamp: goal.createdTimestamp,
+      goalId: goal.goalId,
+      userEmail: goal.userEmail,
+      goalPriority: goal.goalPriority,
+      goalType: goal.goalType);
 }
 
 //TODO: refactor

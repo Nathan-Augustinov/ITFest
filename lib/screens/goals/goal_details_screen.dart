@@ -1,5 +1,6 @@
 import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:it_fest/constants/app_colors.dart';
 import 'package:it_fest/models/goal.dart';
@@ -22,7 +23,9 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
   late TextEditingController _descriptionController;
   String? _typeSelectedValue;
   String? _prioritySelectedValue;
-  Goal newGoal = initializeGoal();
+  bool _isChecked = false;
+  String _userEmail = "";
+  Goal _newGoal = initializeGoal();
 
   @override
   void initState() {
@@ -30,8 +33,12 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
     _titleController = TextEditingController(text: widget.goal.name);
     _descriptionController =
         TextEditingController(text: widget.goal.description);
+    setState(() {
+      _newGoal = initGoalWithOldOne(widget.goal);
+    });
     _typeSelectedValue = getTaskDropdownText(widget.goal.goalType);
     _prioritySelectedValue = getPriorityDropdownText(widget.goal.goalPriority);
+    _userEmail = FirebaseAuth.instance.currentUser?.email ?? "";
   }
 
   @override
@@ -71,7 +78,7 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
                 text: widget.goal.name,
                 onChanged: (text) => {
                       setState(() {
-                        newGoal.name = text;
+                        _newGoal.name = text;
                       })
                     },
                 textInputType: TextInputType.text),
@@ -81,11 +88,28 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
                 text: widget.goal.description,
                 onChanged: (text) => {
                       setState(() {
-                        newGoal.description = text;
+                        _newGoal.description = text;
                       })
                     },
                 textInputType: TextInputType.text),
             const SizedBox(height: 16.0),
+            Row(children: [
+              Container(
+                alignment: Alignment.centerLeft,
+                child: Checkbox(
+                  value: _isChecked,
+                  onChanged: (newValue) {
+                    setState(() {
+                      _isChecked = newValue!;
+                    });
+                  },
+                ),
+              ),
+              const Text("Mark as completed")
+            ]),
+            const SizedBox(
+              height: 16.0,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -187,7 +211,7 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
                         textAlign: TextAlign.center,
                       ),
                       onPressed: () {
-                        editPersonalGoal(newGoal);
+                        editPersonalGoal(_newGoal, _userEmail, _isChecked);
                       }),
                 ))
           ],
