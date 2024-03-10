@@ -50,6 +50,15 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
   }
 
   @override
+  void didChangeDependencies() async {
+    super.didChangeDependencies();
+    bool value = await getCompletedValue(widget.goal, _userEmail);
+    setState(() {
+      _isChecked = value;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -213,6 +222,7 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
                       ),
                       onPressed: () {
                         editPersonalGoal(_newGoal, _userEmail, _isChecked);
+                        Navigator.pop(context);
                       }),
                 )),
             widget.hasFriends != null && widget.hasFriends!

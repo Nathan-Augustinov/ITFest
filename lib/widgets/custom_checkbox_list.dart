@@ -7,6 +7,7 @@ class CheckboxDialog extends StatefulWidget {
 
   final List<Account> friendList;
   List<bool> checkboxStates;
+
   @override
   State<CheckboxDialog> createState() => _CheckboxDialogState();
 }
@@ -39,7 +40,7 @@ class _CheckboxDialogState extends State<CheckboxDialog> {
           ],
         ),
       ),
-      actions: <Widget>[
+      actions: [
         ElevatedButton(
           onPressed: () {
             Navigator.of(context).pop();

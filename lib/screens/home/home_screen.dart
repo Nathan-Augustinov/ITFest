@@ -274,29 +274,32 @@ class _HomeScreenState extends State<HomeScreen> {
               } else if (snapshot.hasError) {
                 return Center(child: Text('Error: ${snapshot.error}'));
               } else {
-                return Expanded(
-                  child: ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      itemCount: snapshot.data!.length,
-                      itemBuilder: (context, index) => GestureDetector(
-                            onTap: () => {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => GoalDetailsScreen(
-                                            goal: snapshot.data![index],
-                                            hasFriends: true,
-                                          )))
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.only(bottom: 10),
-                              child: GoalCard(
-                                  goal: snapshot.data![index],
-                                  isShared: true,
-                                  insets: const EdgeInsets.all(0)),
-                            ),
-                          )),
-                );
+                return snapshot.data!.isEmpty
+                    ? const Text("You have no shared tasks! ")
+                    : Expanded(
+                        child: ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            itemCount: snapshot.data!.length,
+                            itemBuilder: (context, index) => GestureDetector(
+                                  onTap: () => {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                GoalDetailsScreen(
+                                                  goal: snapshot.data![index],
+                                                  hasFriends: true,
+                                                )))
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(bottom: 10),
+                                    child: GoalCard(
+                                        goal: snapshot.data![index],
+                                        isShared: true,
+                                        insets: const EdgeInsets.all(0)),
+                                  ),
+                                )),
+                      );
               }
             }),
       ]),

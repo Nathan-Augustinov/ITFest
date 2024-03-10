@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:it_fest/constants/app_colors.dart';
@@ -21,17 +20,6 @@ class GoalCard extends StatefulWidget {
 }
 
 class _GoalCardScreenState extends State<GoalCard> {
-  // late Future<List<String>> _friendsProfilePicturesFuture;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    // setState(() {
-    //   _friendsProfilePicturesFuture = getProfilePicturesForGoalsSharedUsers();
-    // });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -52,10 +40,10 @@ class _GoalCardScreenState extends State<GoalCard> {
                     padding: AppInsets.leftRightTopBottom10,
                     child: Text(
                       widget.goal.name,
-                      // style: AppTexts.font16Bold,
                     )),
                 FutureBuilder<List<String>>(
-                    future: getSharedUsersProfilePicturesForGoal(widget.goal.goalId),
+                    future: getSharedUsersProfilePicturesForGoal(
+                        widget.goal.goalId),
                     builder: (BuildContext context,
                         AsyncSnapshot<List<String>> snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
@@ -72,10 +60,11 @@ class _GoalCardScreenState extends State<GoalCard> {
                               children: snapshot.data
                                       ?.map((profilePicture) => CircleAvatar(
                                             radius: 15,
-                                            backgroundImage:
-                                                profilePicture.startsWith('http')
-                                                  ? NetworkImage(profilePicture)
-                                                  : AssetImage(profilePicture) as ImageProvider,
+                                            backgroundImage: profilePicture
+                                                    .startsWith('http')
+                                                ? NetworkImage(profilePicture)
+                                                : AssetImage(profilePicture)
+                                                    as ImageProvider,
                                           ))
                                       .toList() ??
                                   [],
@@ -119,27 +108,30 @@ class _GoalCardScreenState extends State<GoalCard> {
     );
   }
 
-  Future<List<String>> getSharedUsersProfilePicturesForGoal(String goalId) async {
-    // String userEmail = FirebaseAuth.instance.currentUser!.email!;
-  
-    // List<Goal> userSharedGoals = [];
+  Future<List<String>> getSharedUsersProfilePicturesForGoal(
+      String goalId) async {
     List<String> profilePictures = [];
 
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('goals')
-                                    .doc(goalId).collection('users').get();
-    for(DocumentSnapshot doc in querySnapshot.docs){
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('goals')
+        .doc(goalId)
+        .collection('users')
+        .get();
+    for (DocumentSnapshot doc in querySnapshot.docs) {
       String profilePictureUrl = "";
       print(doc['email']);
       String fileName = "${doc['email']}_profilepic.jpg";
-      try{
-        profilePictureUrl = await FirebaseStorage.instance.ref().child(fileName).getDownloadURL();
-      }
-      catch(e){
+      try {
+        profilePictureUrl = await FirebaseStorage.instance
+            .ref()
+            .child(fileName)
+            .getDownloadURL();
+      } catch (e) {
         profilePictureUrl = 'assets/images/empty_profile_pic.jpg';
       }
-    
+
       profilePictures.add(profilePictureUrl);
     }
-      return profilePictures;
-    }
+    return profilePictures;
+  }
 }

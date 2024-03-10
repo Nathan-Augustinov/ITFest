@@ -90,6 +90,22 @@ void editPersonalGoal(Goal goal, String userEmail, bool isChecked) async {
   });
 }
 
+getCompletedValue(Goal goal, String userEmail) async {
+  bool isChecked = false;
+  CollectionReference goalsCollection =
+      FirebaseFirestore.instance.collection('goals');
+  DocumentReference goalDocument = goalsCollection.doc(goal.goalId);
+  CollectionReference usersCollection = goalDocument.collection('users');
+  QuerySnapshot querySnapshot = await usersCollection.get();
+  querySnapshot.docs.forEach((doc) {
+    if (doc['email'] == userEmail) {
+      isChecked = doc['completed'];
+    }
+  });
+
+  return isChecked;
+}
+
 String getCompletedTimestamp(bool isChecked) {
   return isChecked ? DateTime.now().millisecondsSinceEpoch.toString() : '';
 }
@@ -133,14 +149,15 @@ String getDeadlineMillisecondsTimestamp(int days) {
 
 Goal initializeGoal() {
   return Goal(
-      name: "",
-      description: "",
-      deadlineTimestamp: "",
-      createdTimestamp: "",
-      goalId: "",
-      userEmail: "",
-      goalPriority: GoalPriority.low,
-      goalType: GoalType.daily);
+    name: "",
+    description: "",
+    deadlineTimestamp: "",
+    createdTimestamp: "",
+    goalId: "",
+    userEmail: "",
+    goalPriority: GoalPriority.low,
+    goalType: GoalType.daily,
+  );
 }
 
 Goal initGoalWithOldOne(Goal goal) {

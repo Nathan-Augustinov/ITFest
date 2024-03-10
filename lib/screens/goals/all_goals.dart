@@ -115,7 +115,6 @@ class _AllGoalsScreenState extends State<AllGoalsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Replace this with your actual list of tasks
     return DefaultTabController(
       length: 4,
       child: Scaffold(
@@ -171,10 +170,14 @@ class _AllGoalsScreenState extends State<AllGoalsScreen> {
                     decoration: BoxDecoration(
                         color: AppColors.lightOrange,
                         borderRadius: BorderRadius.circular(15),
-                        border:Border.all(color: AppColors.lightOrange, width: 1)),
+                        border:
+                            Border.all(color: AppColors.lightOrange, width: 1)),
                     child: const Align(
                       alignment: Alignment.center,
-                      child: Text('Half a year', textAlign: TextAlign.center,),
+                      child: Text(
+                        'Half a year',
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ),
                 ),
