@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:it_fest/constants/app_colors.dart';
@@ -206,9 +207,41 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     style: TextStyle(color: Colors.white, fontSize: 18),
                     textAlign: TextAlign.center,
                   ),
-                  onPressed: () {
+                  onPressed: () async {
                     //TODO: update firebase
-                  },
+                  if (_firstname.isEmpty || _lastname.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("First name and last name can't be empty"),
+                      ),
+                    );
+                    return;
+                  }
+                  
+                  // Attempt to update user details in Firestore
+                  try {
+                    await FirebaseFirestore.instance
+                        .collection('accounts')
+                        .doc(widget.account?.email) // Assuming email is used as the document ID
+                        .update({
+                          'firstName': _firstname,
+                          'lastName': _lastname,
+                          // Include any other fields you might have
+                        });
+                    
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Profile updated successfully"),
+                      ),
+                    );
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text("Error updating profile: $e"),
+                      ),
+                    );
+                  }
+                },
                 ),
               ),
             ),
