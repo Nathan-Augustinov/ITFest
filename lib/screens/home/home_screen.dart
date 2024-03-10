@@ -10,6 +10,7 @@ import 'package:it_fest/models/goal.dart';
 import 'package:it_fest/screens/goals/goal_details_screen.dart';
 import 'package:it_fest/screens/home/_utilities.dart';
 import 'package:it_fest/widgets/goal_card.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -21,6 +22,9 @@ class _HomeScreenState extends State<HomeScreen> {
   late User? user;
   String _userName = '';
   String _photoURL = '';
+  int _workoutGoal = 0;
+  int _waterGoal = 0;
+  int _sleepGoal = 0;
 
   //TODO: urmatoarea saptamana taskuri
   @override
@@ -31,6 +35,29 @@ class _HomeScreenState extends State<HomeScreen> {
     });
     _fetchUserName(user?.email ?? "");
     _fetchUserProfilePicture(user?.email ?? "");
+    getGoals();
+  }
+
+  void getGoals() async {
+    await FirebaseFirestore.instance
+        .collection('accounts')
+        .doc(user?.email)
+        .get()
+        .then((snapshot) {
+      if (snapshot.exists) {
+        var data = snapshot.data();
+        if (data != null) {
+          setState(() {
+            _workoutGoal = data['workout_goal'] ?? 0;
+            _waterGoal = data['water_goal'] ?? 0;
+            _sleepGoal = data['sleep_goal'] ?? 0;
+          });
+          // workoutGoal = data['workout_goal'];
+          // waterGoal = data['water_goal'];
+          // sleepGoal = data['sleep_goal'];
+        }
+      }
+    });
   }
 
 //TODO: show latest goals
@@ -82,12 +109,9 @@ class _HomeScreenState extends State<HomeScreen> {
               onTap: () => uploadProfilePicture(),
               child: CircleAvatar(
                 radius: 35,
-                backgroundImage:
-                    //TODO: if user has image ( NetworkImage('https://picsum.photos/id/237/200/300'),) put image else
-                    // AssetImage('assets/images/empty_profile_pic.jpg'),
-                    _photoURL.startsWith('http')
-                        ? NetworkImage(_photoURL)
-                        : AssetImage(_photoURL) as ImageProvider,
+                backgroundImage: _photoURL.startsWith('http')
+                    ? NetworkImage(_photoURL)
+                    : AssetImage(_photoURL) as ImageProvider,
               ),
             ),
             //TODO: remove hardcoded code
@@ -158,6 +182,89 @@ class _HomeScreenState extends State<HomeScreen> {
               }
             }),
         const SizedBox(height: 30),
+        Row(
+          children: <Widget>[
+            Padding(
+              padding: AppInsets.leftRight10,
+              child: GestureDetector(
+                onTap: _workoutGoal < 60 ? () => addWorkout() : null,
+                child: CircularPercentIndicator(
+                  radius: 45.0,
+                  lineWidth: 10.0,
+                  percent: _workoutGoal / 60,
+                  header: const Text("Workout"),
+                  center: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.fitness_center,
+                          size: 30.0,
+                          color: Colors.blue,
+                        ),
+                        Text("$_workoutGoal/60"),
+                        const Text("min")
+                      ]),
+                  backgroundColor: Colors.grey,
+                  progressColor: Colors.blue,
+                ),
+              ),
+            ),
+            Padding(
+              padding: AppInsets.leftRight5,
+              child: GestureDetector(
+                onTap: _waterGoal < 10 ? () => addWater() : null,
+                child: CircularPercentIndicator(
+                  radius: 45.0,
+                  lineWidth: 10.0,
+                  percent: _waterGoal / 10,
+                  header: const Text("Water"),
+                  center: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.water_drop,
+                        size: 30.0,
+                        color: Colors.red,
+                      ),
+                      Text("$_waterGoal/10"),
+                      const Text("cups")
+                    ],
+                  ),
+                  backgroundColor: Colors.grey,
+                  progressColor: Colors.red,
+                ),
+              ),
+            ),
+            Padding(
+              padding: AppInsets.leftRight10,
+              child: GestureDetector(
+                onTap: _sleepGoal < 8 ? () => addSleep() : null,
+                child: CircularPercentIndicator(
+                  radius: 45.0,
+                  lineWidth: 10.0,
+                  percent: _sleepGoal / 8,
+                  header: Text("Sleep"),
+                  center: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.bedtime,
+                          size: 30.0,
+                          color: Colors.green,
+                        ),
+                        Text("$_sleepGoal/8"),
+                        const Text("hours")
+                      ]),
+                  backgroundColor: Colors.grey,
+                  progressColor: Colors.green,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(
+          height: 20,
+        ),
         Text(
           'Shared with friends',
           style: AppTexts.font16Bold,
@@ -342,5 +449,53 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     }
     return count;
+  }
+
+  void addWorkout() async {
+    setState(() {
+      _workoutGoal += 30;
+    });
+    DocumentSnapshot snapshot = await FirebaseFirestore.instance
+        .collection('accounts')
+        .doc(user?.email)
+        .get();
+    if (snapshot.exists) {
+      await FirebaseFirestore.instance
+          .collection('accounts')
+          .doc(user?.email)
+          .update({'workout_goal': _workoutGoal});
+    }
+  }
+
+  void addSleep() async {
+    setState(() {
+      _sleepGoal += 8;
+    });
+    DocumentSnapshot snapshot = await FirebaseFirestore.instance
+        .collection('accounts')
+        .doc(user?.email)
+        .get();
+    if (snapshot.exists) {
+      await FirebaseFirestore.instance
+          .collection('accounts')
+          .doc(user?.email)
+          .update({'sleep_goal': _sleepGoal});
+    }
+  }
+
+  void addWater() async {
+    setState(() {
+      _waterGoal += 1;
+    });
+    DocumentSnapshot snapshot = await FirebaseFirestore.instance
+        .collection('accounts')
+        .doc(user?.email)
+        .get();
+    if (snapshot.exists) {
+      await FirebaseFirestore.instance
+          .collection('accounts')
+          .doc(user?.email)
+          .update({'water_goal': _waterGoal});
+    }
   }
 }
