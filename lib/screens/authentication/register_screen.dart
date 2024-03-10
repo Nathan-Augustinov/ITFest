@@ -277,6 +277,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
       'email': email,
       'photoURL': '',
       'friends': [],
+      'workout_goal': 0,
+      'water_goal': 0,
+      'sleep_goal': 0,
     });
   }
 
