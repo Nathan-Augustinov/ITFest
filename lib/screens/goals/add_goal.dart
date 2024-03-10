@@ -20,16 +20,15 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
   List<bool> _checkBoxes = [];
   String? _typeSelectedValue;
   String? _prioritySelectedValue;
-  Goal? goal;
+  Goal goal = initializeGoal();
   String userEmail = "";
-  List<String> _friendsEmails = [];
+  final List<String> _friendsEmails = [];
   List<Account> _friends = [];
 
   @override
   initState() {
     super.initState();
     setState(() {
-      goal = initializeGoal();
       userEmail = FirebaseAuth.instance.currentUser?.email ?? "";
     });
   }
@@ -101,7 +100,7 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
     return Scaffold(
         appBar: AppBar(
           title: const Text("Add personal goal"),
-          backgroundColor: AppColors.lightGreen,
+          backgroundColor: AppColors.lightOrange,
         ),
         //TODO: add legend
         body: Container(
@@ -117,7 +116,7 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
                   textInputType: TextInputType.name,
                   onChanged: (name) {
                     setState(() {
-                      goal?.name = name;
+                      goal.name = name;
                     });
                   },
                 ),
@@ -128,7 +127,7 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
                   textInputType: TextInputType.name,
                   onChanged: (description) {
                     setState(() {
-                      goal?.description = description;
+                      goal.description = description;
                     });
                   },
                 ),
@@ -264,16 +263,14 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
                           if (userEmail.isNotEmpty) {
                             setState(() {
                               //TODO: validation!!
-                              goal?.goalPriority = returnGoalPriority(
+                              goal.goalPriority = returnGoalPriority(
                                   _prioritySelectedValue ?? "");
-                              goal?.goalType =
+                              goal.goalType =
                                   returnTaskType(_typeSelectedValue ?? "");
                             });
                             _createListOfCheckedFriends();
-                            if (goal != null) {
-                              addPersonalGoalToForebase(
-                                  goal!, userEmail, _friendsEmails);
-                            }
+                            addPersonalGoalToForebase(
+                                goal, userEmail, _friendsEmails);
                           }
                         }),
                   ),

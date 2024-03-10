@@ -22,6 +22,7 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
   late TextEditingController _descriptionController;
   String? _typeSelectedValue;
   String? _prioritySelectedValue;
+  Goal newGoal = initializeGoal();
 
   @override
   void initState() {
@@ -29,6 +30,8 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
     _titleController = TextEditingController(text: widget.goal.name);
     _descriptionController =
         TextEditingController(text: widget.goal.description);
+    _typeSelectedValue = getTaskDropdownText(widget.goal.goalType);
+    _prioritySelectedValue = getPriorityDropdownText(widget.goal.goalPriority);
   }
 
   @override
@@ -66,13 +69,21 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
             CustomTextfield(
                 label: "Change title",
                 text: widget.goal.name,
-                onChanged: (text) => {},
+                onChanged: (text) => {
+                      setState(() {
+                        newGoal.name = text;
+                      })
+                    },
                 textInputType: TextInputType.text),
             const SizedBox(height: 16.0),
             CustomTextfield(
                 label: "Change description",
                 text: widget.goal.description,
-                onChanged: (text) => {},
+                onChanged: (text) => {
+                      setState(() {
+                        newGoal.description = text;
+                      })
+                    },
                 textInputType: TextInputType.text),
             const SizedBox(height: 16.0),
             Row(
@@ -175,7 +186,9 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
                         style: TextStyle(color: Colors.white, fontSize: 18),
                         textAlign: TextAlign.center,
                       ),
-                      onPressed: () {}),
+                      onPressed: () {
+                        editPersonalGoal(newGoal);
+                      }),
                 ))
           ],
         ),

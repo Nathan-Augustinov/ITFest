@@ -39,6 +39,20 @@ void addPersonalGoalToForebase(
   });
 }
 
+void editPersonalGoal(Goal goal) async {
+  CollectionReference goalsCollection =
+      FirebaseFirestore.instance.collection('goals');
+
+  await goalsCollection.add({
+    'title': goal.name,
+    'description': goal.description,
+    'priority': goal.goalPriority.name,
+    'type': goal.goalType.name,
+    'deadline': returnDeadlineTimestamp(goal.goalType),
+    'createdTime': getCreatedTimeMillisecondsTimestamp(),
+  });
+}
+
 bool checkIfOwmer(String ownerEmail, String email) {
   return ownerEmail == email;
 }
@@ -110,5 +124,31 @@ GoalType returnTaskType(String type) {
       return GoalType.halfYear;
     default:
       return GoalType.daily;
+  }
+}
+
+String getTaskDropdownText(GoalType type) {
+  switch (type) {
+    case GoalType.daily:
+      return "Daily";
+    case GoalType.monthly:
+      return "A month";
+    case GoalType.halfYear:
+      return "Half a year";
+    default:
+      return "Daily";
+  }
+}
+
+String getPriorityDropdownText(GoalPriority priority) {
+  switch (priority) {
+    case GoalPriority.low:
+      return "Low";
+    case GoalPriority.high:
+      return "High";
+    case GoalPriority.medium:
+      return "Medium";
+    default:
+      return "Low";
   }
 }
