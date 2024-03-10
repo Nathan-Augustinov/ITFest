@@ -5,7 +5,7 @@ import 'package:it_fest/constants/app_colors.dart';
 import 'package:it_fest/constants/insets.dart';
 import 'package:it_fest/models/goal.dart';
 import 'package:it_fest/screens/home/_utilities.dart';
-import 'package:it_fest/widgets/task_card.dart';
+import 'package:it_fest/widgets/goal_card.dart';
 
 class AllGoalsScreen extends StatefulWidget {
   const AllGoalsScreen({super.key});

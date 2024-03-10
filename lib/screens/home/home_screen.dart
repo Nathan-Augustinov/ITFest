@@ -9,7 +9,7 @@ import 'package:it_fest/constants/insets.dart';
 import 'package:it_fest/models/goal.dart';
 import 'package:it_fest/screens/goals/goal_details_screen.dart';
 import 'package:it_fest/screens/home/_utilities.dart';
-import 'package:it_fest/widgets/task_card.dart';
+import 'package:it_fest/widgets/goal_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
