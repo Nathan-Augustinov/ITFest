@@ -37,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-      void uploadProfilePicture() async {
+    void uploadProfilePicture() async {
       final image = await ImagePicker().pickImage(
           source: ImageSource.gallery,
           maxHeight: 512,
@@ -46,30 +46,30 @@ class _HomeScreenState extends State<HomeScreen> {
 
       String userEmail = user?.email ?? "";
 
-    Reference ref =
-        FirebaseStorage.instance.ref().child("${userEmail}_profilepic.jpg");
-    await ref.putFile(File(image!.path));
-    ref.getDownloadURL().then((value) {
-      if (mounted) {
-        setState(() {
-          _photoURL = value;
-        });
-      }
-    });
-    FirebaseFirestore.instance
-        .collection('accounts')
-        .get()
-        .then((value) => value.docs.forEach((element) {
-              if (element.id == userEmail) {
-                var docRef = FirebaseFirestore.instance
-                    .collection('accounts')
-                    .doc(element.id);
-                if (element['photoURL'] != "") {
-                  docRef.update({'photoURL': _photoURL});
+      Reference ref =
+          FirebaseStorage.instance.ref().child("${userEmail}_profilepic.jpg");
+      await ref.putFile(File(image!.path));
+      ref.getDownloadURL().then((value) {
+        if (mounted) {
+          setState(() {
+            _photoURL = value;
+          });
+        }
+      });
+      FirebaseFirestore.instance
+          .collection('accounts')
+          .get()
+          .then((value) => value.docs.forEach((element) {
+                if (element.id == userEmail) {
+                  var docRef = FirebaseFirestore.instance
+                      .collection('accounts')
+                      .doc(element.id);
+                  if (element['photoURL'] != "") {
+                    docRef.update({'photoURL': _photoURL});
+                  }
                 }
-              }
-            }));
-  }
+              }));
+    }
 
     return Scaffold(
         body: Container(
@@ -105,23 +105,23 @@ class _HomeScreenState extends State<HomeScreen> {
                     Padding(
                       padding: AppInsets.top10,
                       child: FutureBuilder<int>(
-                        future: countTasksWithTodayDeadline(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const Center(child: CircularProgressIndicator());
-                          } else if (snapshot.hasError) {
-                            return Center(child: Text('Error: ${snapshot.error}'));
-                          } else {
-                            return Text(
-                              snapshot.data == 0
-                                  ? 'No tasks for today'
-                                  : 'You have ${snapshot.data} tasks due today',
-                              style: AppTexts.font16Normal
-                              );
-                          }
-                        }
-                      ),
+                          future: countTasksWithTodayDeadline(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                  child: CircularProgressIndicator());
+                            } else if (snapshot.hasError) {
+                              return Center(
+                                  child: Text('Error: ${snapshot.error}'));
+                            } else {
+                              return Text(
+                                  snapshot.data == 0
+                                      ? 'No tasks for today'
+                                      : 'You have ${snapshot.data} tasks due today',
+                                  style: AppTexts.font16Normal);
+                            }
+                          }),
                     )
                   ],
                 )),
@@ -177,9 +177,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       itemBuilder: (context, index) => Padding(
                             padding: const EdgeInsets.only(bottom: 10),
                             child: GoalCard(
-                              goal: snapshot.data![index],
-                              insets: const EdgeInsets.all(0)
-                            ),
+                                goal: snapshot.data![index],
+                                isShared: true,
+                                insets: const EdgeInsets.all(0)),
                           )),
                 );
               }
