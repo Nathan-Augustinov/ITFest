@@ -213,49 +213,45 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         height: MediaQuery.of(context).size.height * 0.07,
                         child: Center(
                           child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              textStyle: const TextStyle(fontSize: 18),
-                              minimumSize: Size.fromWidth(
-                                  MediaQuery.of(context).size.width * 0.4),
-                              foregroundColor: AppColors.orange,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(30),
+                              style: ElevatedButton.styleFrom(
+                                textStyle: const TextStyle(fontSize: 18),
+                                minimumSize: Size.fromWidth(
+                                    MediaQuery.of(context).size.width * 0.4),
+                                foregroundColor: AppColors.orange,
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(30),
+                                  ),
                                 ),
                               ),
-                            ),
-                            child: const Text(
-                              'Register',
-                              style: TextStyle(
-                                fontFamily: 'Montserrat',
+                              child: const Text(
+                                'Register',
                               ),
-                            ),
-                            onPressed: () {
-                              bool emailIsValid = EmailValidator.validate(
-                                  _emailController.text);
-                              if (_formKey.currentState!.validate()) {
-                                if (emailIsValid == false) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content:
-                                          Text('Please enter a valid email'),
-                                    ),
-                                  );
-                                } else {
-                                  addUserToDatabase(
-                                      _nameController.text,
-                                      _surnameController.text,
-                                      _emailController.text);
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const LoginScreen()),
-                                  );
+                              onPressed: () {
+                                bool emailIsValid = EmailValidator.validate(
+                                    _emailController.text.trim());
+                                if (_formKey.currentState!.validate()) {
+                                  if (emailIsValid == false) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content:
+                                            Text('Please enter a valid email'),
+                                      ),
+                                    );
+                                  } else {
+                                    addUserToDatabase(
+                                        _nameController.text,
+                                        _surnameController.text,
+                                        _emailController.text);
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const LoginScreen()),
+                                    );
+                                  }
                                 }
-                              }
-                            },
-                          ),
+                              }),
                         ),
                       ),
                     ],

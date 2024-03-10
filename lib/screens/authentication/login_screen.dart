@@ -128,10 +128,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             child: const Text(
                               'Login',
-                              style: TextStyle(
-                                // color: Colors.white,
-                                fontFamily: 'Montserrat',
-                              ),
                             ),
                             onPressed: () {
                               bool emailIsValid = EmailValidator.validate(
@@ -183,12 +179,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           label: const Text('Sign in with Google'),
                           onPressed: () async {
-                            // Add your logic for logging in with Google here
                             User? user =
                                 await _googleAuthService.signInWithGoogle();
 
                             if (user != null && context.mounted) {
-                              // Add account to Firestore
                               FirebaseFirestore.instance
                                   .collection('accounts')
                                   .doc(user.email)
@@ -219,29 +213,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           TextButton(
                             style: TextButton.styleFrom(
                                 foregroundColor: AppColors.yellow),
-                            child: const Text(
-                                // AppLocalizations.of(context).forgot_password),
-                                'Forgot Password'),
-                            onPressed: () {
-                              // if (_email.isNotEmpty) {
-                              //   bool emailIsValid =
-                              //       EmailValidator.validate(_email);
-                              //   if (!emailIsValid) {
-                              //     ScaffoldMessenger.of(context).showSnackBar(
-                              //       SnackBar(
-                              //         content: Text(
-                              //             AppLocalizations.of(context)
-                              //                 .email_example),
-                              //       ),
-                              //     );
-                              //   } else {
-                              //     AuthenticationManager()
-                              //         .resetPassword(_email, context);
-                              //   }
-                              // } else {
-                              //   _showChangePasswordInfo();
-                              // }
-                            },
+                            child: const Text('Forgot Password'),
+                            onPressed: () {},
                           ),
                           const Text(
                             "|",
@@ -280,22 +253,16 @@ class _LoginScreenState extends State<LoginScreen> {
       );
       // User logged in successfully
       User? user = userCredential.user;
-      if (user != null){
+      if (user != null) {
         FirebaseFirestore.instance
             .collection('accounts')
             .doc(email)
-            .update({'uid': user!.uid});
-      print('User logged in: ${user.email}');
-      
-        // ignore: use_build_context_synchronously
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    const BottomNavBar()));
+            .update({'uid': user.uid});
+
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => const BottomNavBar()));
       }
       // Save user email in sharedPreferences
-      // AuthUtilities().saveUserEmail(user.email ?? "");
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(

@@ -8,7 +8,7 @@ class CheckboxDialog extends StatefulWidget {
   final List<Account> friendList;
   List<bool> checkboxStates;
   @override
-  _CheckboxDialogState createState() => _CheckboxDialogState();
+  State<CheckboxDialog> createState() => _CheckboxDialogState();
 }
 
 class _CheckboxDialogState extends State<CheckboxDialog> {

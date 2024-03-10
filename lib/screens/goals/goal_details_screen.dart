@@ -6,16 +6,17 @@ import 'package:it_fest/constants/app_colors.dart';
 import 'package:it_fest/models/goal.dart';
 import 'package:it_fest/screens/goals/_utilities.dart';
 import 'package:it_fest/widgets/custom_text_field.dart';
+import 'package:it_fest/widgets/goal_with_friend_card.dart';
 
 enum Target { daily, monthly, halfYear }
 
 class GoalDetailsScreen extends StatefulWidget {
+  const GoalDetailsScreen({super.key, required this.goal, this.hasFriends});
   final Goal goal;
-
-  const GoalDetailsScreen({super.key, required this.goal});
+  final bool? hasFriends;
 
   @override
-  _GoalDetailsScreenState createState() => _GoalDetailsScreenState();
+  State<GoalDetailsScreen> createState() => _GoalDetailsScreenState();
 }
 
 class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
@@ -213,7 +214,10 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
                       onPressed: () {
                         editPersonalGoal(_newGoal, _userEmail, _isChecked);
                       }),
-                ))
+                )),
+            widget.hasFriends != null && widget.hasFriends!
+                ? SharedGoalFriendsCard(goal: widget.goal)
+                : Container()
           ],
         ),
       ),
